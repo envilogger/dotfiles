@@ -1,0 +1,73 @@
+{
+    "workbench.colorTheme": "Quiet Light",
+    "files.watcherExclude": {
+        "**/.bloop": true,
+        "**/.metals": true,
+        "**/.ammonite": true
+    },
+    "extensions.experimental.affinity": {
+        "vscode.vim": 1,
+        "asvetliakov.vscode-neovim": 1
+    },
+    "workbench.sideBar.location": "right",
+    "vim.easymotion": true,
+    "vim.surround": true,
+    "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": true,
+    "vim.hlsearch": true,
+    "vim.insertModeKeyBindings": [
+        {
+            "before": ["j", "k"],
+            "after": ["<Esc>"]
+        }
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<C-n>"],
+            "after": [":nohl"]
+        },
+        {
+            "before": ["<leader>", "t", "t"],
+            "commands": ["terminal.focus"]
+        },
+        {
+            "before": ["<leader>", "h"],
+            "commands": ["editor.action.showHover"]
+        },
+        {
+            "before": ["<leader>", "s", "s"],
+                "commands": ["workbench.action.files.saveFiles"]
+        },
+        {
+            "before": ["<leader>", "<leader>"],
+            "commands": ["workbench.action.quickOpen"]
+        },
+        {
+            "before": ["<leader>", "r", "r"],
+            "commands": ["editor.action.formatDocument"]
+        },
+
+        // easymotion starts with <leader>, e
+        {
+            "before": ["<leader>", "e", "s"],
+            "after": ["<leader>", "<leader>", "s"]
+        },
+        {
+            "before": ["<leader>", "e", "w"],
+            "after": ["<leader>", "<leader>", "w"]
+        },
+        {
+            "before": ["<leader>", "e", "e"],
+            "after": ["<leader>", "<leader>", "/"]
+        }
+    ],
+    "vim.leader": "<space>",
+    "vim.handleKeys": {
+        "<C-d>": true,
+        "<C-s>": false,
+        "<C-z>": false,
+        "<C-a>": false,
+        "<C-f>": false
+    },
+    "editor.tabSize": 2
+}
