@@ -1,0 +1,54 @@
+set surround
+set easymotion
+set commentary
+set NERDTree
+
+set clipboard+=unnamed
+
+let mapleader = "\<space>"
+
+nmap <leader>it :action ExpressionTypeInfo<cr>
+" ===============
+" General
+" ===============
+nmap <leader>ss :action SaveAll<cr>
+
+imap jk <ESC>
+
+" ===============
+" Code Navigation
+" ===============
+
+nmap <C-o> :action Back<cr>
+nmap <C-i> :action Forward<cr>
+
+nmap <leader>gu :action GotoSuperMethod<cr>
+nmap <leader>gi :action GotoImplementation<cr>
+nmap <leader>gd :action GotoDeclaration<cr>
+
+nmap <leader>go :action GotoFile<cr>
+nmap <leader>gc :action GotoClass<cr>
+nmap <leader>gf :action GotoFile<cr>
+nmap <leader><leader> :action GotoAction<cr>
+
+nmap <leader>ge :action GotoNextError<cr>
+
+" ==============
+" NerdTree funcs
+" ==============
+
+nmap <leader>n :NERDTreeFocus<cr>
+
+
+" ============
+" Tool Windows
+" ============
+
+nmap <leader>tt :action ActivateTerminalToolWindow<cr>
+
+" ============
+" Refactoring / Formatting
+" ============
+
+nmap <leader>rf :action ReformatCode<cr>
+nmap <leader>rr :action RenameElement<cr>
