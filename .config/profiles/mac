@@ -1,0 +1,5 @@
+# Include brew installed stuff
+export PATH="/usr/local/bin:$PATH"
+
+# Include coursier
+export PATH="$PATH:/Users/envilogger/Library/Application Support/Coursier/bin"
