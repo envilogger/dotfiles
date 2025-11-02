@@ -1,0 +1,6 @@
+font-family = FiraCode Nerd Font Mono
+font-size = 12
+font-style = Medium
+theme = /home/envilogger/.config/themes/ghostty/themes/catppuccin-mocha.conf
+background-opacity = 0.9
+background-blur = true
