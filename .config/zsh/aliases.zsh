@@ -1,6 +1,7 @@
 PATH="$HOME/.cargo/bin:$HOME/.local/npm/bin:$PATH"
 
 alias dotgit="git --git-dir=$HOME/code/dotfiles.git/ --work-tree=$HOME"
+alias open=xdg-open
 
 msvc() {
   echo "Activating MSVC environment..."
