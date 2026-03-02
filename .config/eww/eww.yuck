@@ -59,35 +59,19 @@
 (defpoll volume :interval "1s"
   "scripts/getvol")
 
-(defpoll battery_capacity :interval "30s"
+(defpoll battery_icon :interval "5s"
+  "scripts/battery-svg")
+
+(defpoll battery_capacity :interval "5s"
   "scripts/battery --bat")
 
-(defpoll battery_status :interval "30s"
+(defpoll battery_status :interval "5s"
   "scripts/battery --bat-st")
 
 (defwidget battery_w []
   (box :class "battery" :orientation "h" :space-evenly false :spacing 4
     (label :visible {battery_status == "Discharging"} :text "${battery_capacity}%")
-    (label :class "battery-icon" :text {battery_status != "Discharging" ?
-      (battery_capacity < 15 ? "󰢟" :
-      battery_capacity < 25 ? "󰢜" :
-      battery_capacity < 35 ? "󰂆" :
-      battery_capacity < 45 ? "󰂇" :
-      battery_capacity < 55 ? "󰂈" :
-      battery_capacity < 65 ? "󰢝" :
-      battery_capacity < 75 ? "󰂉" :
-      battery_capacity < 85 ? "󰢞" :
-      battery_capacity < 95 ? "󰂊" : "󰁹") :
-      (battery_capacity < 5 ? "󰂎" :
-      battery_capacity < 15 ? "󰁺" :
-      battery_capacity < 25 ? "󰁻" :
-      battery_capacity < 35 ? "󰁼" :
-      battery_capacity < 45 ? "󰁽" :
-      battery_capacity < 55 ? "󰁾" :
-      battery_capacity < 65 ? "󰁿" :
-      battery_capacity < 75 ? "󰂀" :
-      battery_capacity < 85 ? "󰂁" :
-      battery_capacity < 95 ? "󰂂" : "󰁹")})))
+    (image :path battery_icon :image-width 28 :image-height 18)))
 
 (defpoll time :interval "10s"
   "date '+%H:%M    %b %d, %Y'")
