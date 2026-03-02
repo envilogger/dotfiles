@@ -1,0 +1,122 @@
+* {
+  all: unset; // Unsets everything so you can style everything from scratch
+}
+
+// Global Styles
+.bar {
+  background-color: #eff1f5;
+  color: #4c4f69;
+}
+
+// Styles on classes (see eww.yuck for more information)
+
+.sidestuff slider {
+  all: unset;
+}
+
+.metric {
+  // all: unset;
+
+  scale {
+    // all: unset;
+    padding: 0 4px;
+    min-width: 72px;
+    margin: 0 10px;
+  }
+
+  // Styles for the trough (the bar itself)
+  trough {
+    // all: unset;
+    background-color: #bcc0cc;
+    min-height: 8px;
+    min-width: 64px;
+    border-radius: 2px;
+    background-color: #bcc0cc;
+  }
+  
+  // Styles for the highlight (the filled part of the bar)
+  highlight {
+    // all: unset;
+    background-color: #7287fd;
+    border-radius: 2px;
+  }
+
+  // Styles for the slider knob
+  slider {
+    // all: unset;
+    min-width: 12px;
+    // background-color: #1e66f5;
+    // border-radius: 50%; // Makes it a circle
+  }
+}
+
+// .metric scale trough highlight {
+//   all: unset;
+//   color: #000000;
+//   border-radius: 10px;
+// }
+//
+// .metric scale trough {
+//   all: unset;
+//   border-radius: 50px;
+//   min-height: 3px;
+//   min-width: 50px;
+//   margin-left: 10px;
+//   margin-right: 20px;
+// }
+
+.label-ram {
+  font-size: large;
+}
+
+// .workspaces-widget {
+//   background-color: red;
+// }
+
+.workspace-entry {
+  margin: 0 1pt;
+  border-radius: 8px;
+  min-width: 24px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #ccd0da;
+  }
+}
+
+.workspace-entry.occupied {
+}
+
+.workspace-entry.empty {
+}
+
+.workspace-entry.current {
+  background-color: #ccd0da;
+}
+
+.mem_bar {
+  background-color: black;
+}
+
+.mem_bar_scale {
+    // Styles for the trough (the bar itself)
+  trough {
+    min-height: 5px;
+    background-color: #4c566a;
+    border-radius: 3px;
+  }
+  
+  // Styles for the highlight (the filled part of the bar)
+  highlight {
+    background-color: #88c0d0;
+    border-radius: 3px;
+  }
+
+  // Styles for the slider knob
+  slider {
+    min-width: 15px;
+    min-height: 15px;
+    background-color: #88c0d0;
+    border-radius: 50%; // Makes it a circle
+  }
+}
