@@ -14,7 +14,7 @@
       :icon-size 20
       :space-evenly false
       :spacing 2)
-    ))
+    (battery_w)))
 
 (deflisten workspaces :initial "[]" "bash ~/.config/eww/scripts/get-workspaces")
 (deflisten current_workspace :initial "1" "bash ~/.config/eww/scripts/get-active-workspace")
@@ -58,6 +58,26 @@
 
 (defpoll volume :interval "1s"
   "scripts/getvol")
+
+(defpoll battery_capacity :interval "30s"
+  "scripts/battery --bat")
+
+(defpoll battery_status :interval "30s"
+  "scripts/battery --bat-st")
+
+(defwidget battery_w []
+  (box :class "battery" :orientation "h" :space-evenly false :spacing 4
+    (label :text {battery_status == "Charging" ? "⚡" : "${battery_capacity}%"})
+    (label :class "battery-icon" :text {battery_capacity < 5 ? "󰂎" :
+      battery_capacity < 15 ? "󰁺" :
+      battery_capacity < 25 ? "󰁻" :
+      battery_capacity < 35 ? "󰁼" :
+      battery_capacity < 45 ? "󰁽" :
+      battery_capacity < 55 ? "󰁾" :
+      battery_capacity < 65 ? "󰁿" :
+      battery_capacity < 75 ? "󰂀" :
+      battery_capacity < 85 ? "󰂁" :
+      battery_capacity < 95 ? "󰂂" : "󰁹"})))
 
 (defpoll time :interval "10s"
   "date '+%H:%M    %b %d, %Y'")
