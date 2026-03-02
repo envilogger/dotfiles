@@ -3,6 +3,10 @@ vim.o.laststatus = 3 -- global statusline
 
 vim.keymap.set("i", "jk", "<Esc>", { desc = "Exit insert mode" })
 
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+
 -- if in vscode, load the vscode config and return
 if vim.g.vscode then
   require("vsc")
@@ -11,9 +15,17 @@ end
 
 require("config.lazy")
 require("config.lsp.lua")
-require("config.lsp.dotnet")
-require("config.lsp.rust")
+-- require("config.lsp.dotnet")
+--require("config.lsp.rust")
 require("remap")
+
+-- Neocmake
+vim.lsp.config("neocmake", {
+  -- Some config
+  -- If none, just enable it
+})
+vim.lsp.enable("neocmake")
+vim.lsp.config("buf", {})
 
 -- General settings
 -- hide command line unless needed
@@ -35,8 +47,8 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     -- check if treesitter has parser
     if require("nvim-treesitter.parsers").has_parser() then
       -- use treesitter folding
-      vim.wo.foldmethod = 'expr'
-      vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      vim.wo.foldmethod = "expr"
+      vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
     else
       -- use alternative foldmethod
       vim.opt.foldmethod = "syntax"

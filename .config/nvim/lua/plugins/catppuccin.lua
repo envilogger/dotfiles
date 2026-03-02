@@ -5,7 +5,7 @@ return {
     lazy = false,
     priority = 10000,
     opts = {
-      flavour = "mocha", -- latte, frappe, macchiato, mocha
+      flavour = "latte", -- latte, frappe, macchiato, mocha
       background = {
         light = "latte",
         dark = "mocha",

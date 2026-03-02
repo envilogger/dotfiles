@@ -1,19 +1,51 @@
 return {
+  -- {
+  --   "mason-org/mason.nvim",
+  --   lazy = false,
+  --
+  --   opts = {
+  --     registries = {
+  --       "github:mason-org/mason-registry",
+  --       "github:Crashdummyy/mason-registry",
+  --     },
+  --     ensure_installed = {
+  --       "lua_ls",
+  --       "rust_analyzer",
+  --
+  --       "xmlformatter",
+  --       "csharpier",
+  --
+  --       "prettierd",
+  --       "stylua",
+  --
+  --       "roslyn",
+  --       "rzls",
+  --     },
+  --   },
+  -- },
   {
     "mason-org/mason-lspconfig.nvim",
     lazy = false,
-    opts = {
-      ensure_installed = { "lua_ls" },
-    },
     dependencies = {
       {
         "mason-org/mason.nvim",
         opts_extend = { "ensure_installed" },
         opts = {
+          registries = {
+            "github:mason-org/mason-registry",
+            "github:Crashdummyy/mason-registry",
+          },
           ensure_installed = {
+            "lua_ls",
+            "rust_analyzer",
+
+            "xmlformatter",
+            -- "csharpier",
+
             "prettierd",
             "stylua",
-            "rust_analyzer",
+
+            "roslyn",
           },
         },
       },
@@ -22,7 +54,8 @@ return {
   },
   {
     "seblyng/roslyn.nvim",
-    event = "VeryLazy",
+    -- event = "VeryLazy",
+    ft = { "cs", "razor" },
     ---@module 'roslyn.config'
     ---@type RoslynNvimConfig
     opts = {

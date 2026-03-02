@@ -3,7 +3,13 @@ local snacks = require("snacks")
 require("which-key").add({
   -- global
   { "<leader><leader>", snacks.picker.files, desc = "Find files" },
-  { "<C-n>", function() snacks.explorer() end, desc = "Open explorer" },
+  {
+    "<C-n>",
+    function()
+      snacks.explorer()
+    end,
+    desc = "Open explorer",
+  },
   { "<Esc>", mode = "t", "<C-\\><C-n>", desc = "Exit terminal mode" },
   { "<C-.>", vim.lsp.buf.code_action, desc = "LSP Code action" },
   { "<C-/>", "<cmd>ToggleTerm<cr>", desc = "Toggle terminal", mode = { "n", "i", "t" } },
@@ -26,6 +32,7 @@ require("which-key").add({
   { "<leader>fg", snacks.picker.grep, desc = "Live Grep" },
   { "<leader>fb", snacks.picker.buffers, desc = "Buffers" },
   { "<leader>fh", snacks.picker.help, desc = "Help Tags" },
+  { "<leader>fp", snacks.picker.resume, desc = "Help Tags" },
 
   { "<leader>g", group = "Git" },
   { "<leader>w", group = "Window" },
