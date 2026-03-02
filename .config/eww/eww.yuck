@@ -1,7 +1,7 @@
 (defwidget bar []
   (centerbox :orientation "h"
     (workspaces)
-    (window_w)
+    (label :text time :class "datetime")
     (sidestuff)))
 
 (defwidget sidestuff []
@@ -14,15 +14,7 @@
       :icon-size 20
       :space-evenly false
       :spacing 2)
-    time))
-
-(deflisten window :initial "..." "sh ~/.config/eww/scripts/get-window-title")
-(defwidget window_w []
-  (box
-    (label :text "${window}"
-    )
-  )
-)
+    ))
 
 (deflisten workspaces :initial "[]" "bash ~/.config/eww/scripts/get-workspaces")
 (deflisten current_workspace :initial "1" "bash ~/.config/eww/scripts/get-active-workspace")
@@ -68,7 +60,7 @@
   "scripts/getvol")
 
 (defpoll time :interval "10s"
-  "date '+%H:%M %b %d, %Y'")
+  "date '+%H:%M    %b %d, %Y'")
 
 (defwindow bar
   :monitor '[1, 0]'
