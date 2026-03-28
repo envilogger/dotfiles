@@ -4,8 +4,10 @@
 
 // Global Styles
 .bar {
-  background-color: #eff1f5;
-  color: #4c4f69;
+  // background-color: #eff1f5;
+  // color: #4c4f69;
+  background-color: #303446;
+  color: #c6d0f5;
 }
 
 // Styles on classes (see eww.yuck for more information)
@@ -80,7 +82,7 @@
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #ccd0da;
+    background-color: #51576d;
   }
 }
 
@@ -91,7 +93,7 @@
 }
 
 .workspace-entry.current {
-  background-color: #ccd0da;
+  background-color: #737994;
 }
 
 .battery {
