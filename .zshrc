@@ -1,5 +1,6 @@
 ZSH=/usr/share/oh-my-zsh/
 ZSH_THEME="robbyrussell"
+
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 # Uncomment the following line to use hyphen-insensitive completion.
@@ -17,6 +18,17 @@ COMPLETION_WAITING_DOTS="true"
 # under VCS as dirty. This makes repository status check for large repositories
 # much, much faster.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+case "$HOST" in
+  laptop.envi.cc)
+    MACHINE_COLOR="%F{green}"
+    MACHINE_LABEL="💻"
+    ;;
+  office.envi.cc)
+    MACHINE_COLOR="%F{red}"
+    MACHINE_LABEL="🖥️"
+    ;;
+esac
 
 plugins=(git kubectl kubectx)
 
@@ -37,3 +49,4 @@ fi
 
 source $ZSH/oh-my-zsh.sh
 source $ZSH_CUSTOM/aliases.zsh
+PROMPT="${MACHINE_COLOR}${MACHINE_LABEL}%f %F{cyan}%1~%f $ "
