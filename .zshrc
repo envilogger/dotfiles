@@ -22,11 +22,11 @@ COMPLETION_WAITING_DOTS="true"
 case "$HOST" in
   laptop.envi.cc)
     MACHINE_COLOR="%F{green}"
-    MACHINE_LABEL="💻"
+    MACHINE_LABEL="💻 [laptop]"
     ;;
   office.envi.cc)
     MACHINE_COLOR="%F{red}"
-    MACHINE_LABEL="🖥️"
+    MACHINE_LABEL="🖥️ [office]"
     ;;
 esac
 
