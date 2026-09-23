@@ -10,6 +10,9 @@ Singleton {
     readonly property int radius: 10
     // Popup panels scroll once taller than this fraction of the screen height.
     readonly property real panelMaxHeight: 0.5
+    // Tray apps that are always visible; the rest hide behind a chevron. An entry matches
+    // if the tray item's id or title contains it, ignoring case (e.g. "1password").
+    readonly property list<string> trayPinned: ["teams-for-linux"]
 
     readonly property string font: "FiraCode Nerd Font"
     // Propo variant: icon advance width matches the glyph, so icons centre correctly.

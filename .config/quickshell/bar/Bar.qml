@@ -39,6 +39,7 @@ PanelWindow {
         }
         spacing: Theme.spacing
 
+        Tray { Layout.alignment: Qt.AlignHCenter }
         Volume { Layout.alignment: Qt.AlignHCenter }
         Network { Layout.alignment: Qt.AlignHCenter }
         Bluetooth { Layout.alignment: Qt.AlignHCenter }
