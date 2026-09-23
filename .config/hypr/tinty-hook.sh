@@ -4,6 +4,7 @@
 # - Writes ~/.config/hypr/hyprtoolkit.conf (hyprlauncher and other hyprtoolkit apps
 #   watch it and recolour live).
 # - Reloads Hyprland so hyprland.lua re-reads the palette.
+# - Frames the scheme's wallpaper and sets it in hyprpaper.
 #
 # Must run after ~/.config/quickshell/tinty-hook.sh, which writes palette.json
 # (tinty runs hooks in the order listed in its config.toml).
@@ -30,3 +31,34 @@ EOF
 # Nothing more to do outside a Hyprland session (e.g. tinty run over ssh).
 [[ -n ${HYPRLAND_INSTANCE_SIGNATURE:-} ]] || exit 0
 hyprctl reload >/dev/null
+
+# Wallpaper: the scheme's image from ~/pictures/wallpapers (see the README there), framed
+# in base00 by frame-wallpaper, linked as $state/wallpaper.png for hyprpaper.conf and
+# set live. Each framed image gets its own name, so hyprpaper never shows a cached one.
+wallpapers=$HOME/pictures/wallpapers
+state=$(dirname "$palette")
+
+# Most specific name first: base16-gruvbox-dark-hard tries gruvbox-dark-hard,
+# gruvbox-dark, gruvbox, then default-<variant>.
+find_wallpaper() {
+    local name file
+    name=$(jq -r '.theme | sub("^base(16|24)-"; "")' "$palette")
+    while :; do
+        for file in "$wallpapers/$name".{png,jpg,jpeg,webp,jxl}; do
+            [[ -f $file ]] && { echo "$file"; return; }
+        done
+        [[ $name == *-* ]] || break
+        name=${name%-*}
+    done
+    for file in "$wallpapers/default-$(jq -r '.variant // "dark"' "$palette")".{png,jpg,jpeg,webp,jxl}; do
+        [[ -f $file ]] && { echo "$file"; return; }
+    done
+    return 1
+}
+
+image=$(find_wallpaper) || { echo "tinty-hook: no wallpaper for this scheme in $wallpapers" >&2; exit 0; }
+framed=$state/wallpaper-$(date +%s%N).png
+frame-wallpaper "$image" "$framed" >/dev/null
+ln -sfn "$(basename "$framed")" "$state/wallpaper.png"
+hyprctl hyprpaper wallpaper ",$framed,cover" >/dev/null
+find "$state" -maxdepth 1 -name 'wallpaper-*.png' ! -path "$framed" -delete
