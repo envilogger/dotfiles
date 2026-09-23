@@ -1,4 +1,4 @@
-ZSH=/usr/share/oh-my-zsh/
+ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use case-sensitive completion.
@@ -47,6 +47,6 @@ if [[ ! -d $ZSH_CACHE_DIR ]]; then
   mkdir $ZSH_CACHE_DIR
 fi
 
-source $ZSH/oh-my-zsh.sh
-source $ZSH_CUSTOM/aliases.zsh
+source "$ZSH"/oh-my-zsh.sh
+source "$ZSH_CUSTOM"/aliases.zsh
 PROMPT="${MACHINE_COLOR}${MACHINE_LABEL}%f %F{cyan}%1~%f $ "

@@ -1,6 +1,6 @@
 PATH="$HOME/.cargo/bin:$HOME/.local/npm/bin:$PATH"
 
-alias dotgit="git --git-dir=$HOME/code/dotfiles.git/ --work-tree=$HOME"
+alias dot="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias open=xdg-open
 
 aws-mfa() {
