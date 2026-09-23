@@ -39,19 +39,20 @@ vim.o.relativenumber = true
 
 vim.o.shiftwidth = 2
 
+-- TODO: Check if this is still necessary
 -- folding
-vim.o.foldenable = true
-vim.o.foldlevelstart = 99 -- start with all folds open
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  callback = function()
-    -- check if treesitter has parser
-    if require("nvim-treesitter.parsers").has_parser() then
-      -- use treesitter folding
-      vim.wo.foldmethod = "expr"
-      vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-    else
-      -- use alternative foldmethod
-      vim.opt.foldmethod = "syntax"
-    end
-  end,
-})
+-- vim.o.foldenable = true
+-- vim.o.foldlevelstart = 99 -- start with all folds open
+-- vim.api.nvim_create_autocmd({ "FileType" }, {
+--   callback = function()
+--     -- check if treesitter has parser
+--     if require("nvim-treesitter.parsers").has_parser() then
+--       -- use treesitter folding
+--       vim.wo.foldmethod = "expr"
+--       vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+--     else
+--       -- use alternative foldmethod
+--       vim.opt.foldmethod = "syntax"
+--     end
+--   end,
+-- })
