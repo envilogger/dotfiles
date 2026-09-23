@@ -30,13 +30,14 @@ Singleton {
     // Line thickness of Tabler outline icons (Tabler's default is 2).
     readonly property real iconStroke: 2
 
-    readonly property color bg: "#1e1e2e"
-    readonly property color surface: "#313244"
-    readonly property color overlay: "#45475a"
-    readonly property color fg: "#cdd6f4"
-    readonly property color muted: "#6c7086"
-    readonly property color accent: "#89b4fa"
-    readonly property color warn: "#f9e2af"
-    readonly property color crit: "#f38ba8"
-    readonly property color good: "#a6e3a1"
+    // Nord (nordtheme.com). Muted text uses a lighter grey than nord3 so it stays readable.
+    readonly property color bg: "#2E3440"       // nord0
+    readonly property color surface: "#3B4252"  // nord1
+    readonly property color overlay: "#4C566A"  // nord3
+    readonly property color fg: "#D8DEE9"       // nord4
+    readonly property color muted: "#7B88A1"
+    readonly property color accent: "#88C0D0"   // nord8
+    readonly property color warn: "#EBCB8B"     // nord13
+    readonly property color crit: "#BF616A"     // nord11
+    readonly property color good: "#A3BE8C"     // nord14
 }
