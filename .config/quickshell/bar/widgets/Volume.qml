@@ -30,7 +30,9 @@ Icon {
         : volume < 0.34 ? 0xf057f
         : volume < 0.67 ? 0xf0580
         : 0xf057e
-    color: muted ? Theme.muted : Theme.fg
+    color: area.containsMouse || panel.visible ? Theme.accent
+        : muted ? Theme.muted
+        : Theme.fg
 
     // When the panel was open, clicking the icon first dismisses it via the focus grab;
     // don't let that same click reopen it.
@@ -49,7 +51,15 @@ Icon {
     }
 
     MouseArea {
+        id: area
+        // Larger than the glyph: the full bar width, and half the gap to neighbouring widgets.
         anchors.fill: parent
+        anchors.leftMargin: -(Theme.barWidth - root.width) / 2
+        anchors.rightMargin: -(Theme.barWidth - root.width) / 2
+        anchors.topMargin: -Theme.spacing / 2
+        anchors.bottomMargin: -Theme.spacing / 2
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: mouse => {
             if (mouse.button === Qt.RightButton) {

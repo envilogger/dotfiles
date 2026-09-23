@@ -94,6 +94,15 @@ PopupWindow {
         }
     }
 
+    // Level meter lined up under a VolumeRow's slider (past its icon, before its percentage).
+    component Level: LevelMeter {
+        Layout.fillWidth: true
+        Layout.leftMargin: 30
+        Layout.rightMargin: 46
+        Layout.topMargin: -4
+        active: root.visible
+    }
+
     component Separator: Rectangle {
         Layout.fillWidth: true
         Layout.topMargin: 4
@@ -131,6 +140,7 @@ PopupWindow {
                     Layout.fillWidth: true
                     node: Pipewire.defaultAudioSink
                 }
+                Level { node: Pipewire.defaultAudioSink }
                 DeviceList {
                     Layout.fillWidth: true
                     devices: root.sinks
@@ -147,6 +157,7 @@ PopupWindow {
                     iconOn: 0xf036c
                     iconOff: 0xf036d
                 }
+                Level { node: Pipewire.defaultAudioSource }
                 DeviceList {
                     Layout.fillWidth: true
                     devices: root.sources
