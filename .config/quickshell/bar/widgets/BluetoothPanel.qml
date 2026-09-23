@@ -128,15 +128,15 @@ PopupWindow {
     }
 
     component Header: RowLayout {
-        property int code
+        property string icon
         property string title
         spacing: 8
         Layout.topMargin: 4
 
-        Icon {
-            code: parent.code
+        SvgIcon {
+            name: parent.icon
             color: Theme.accent
-            font.pixelSize: Theme.fontSize + 4
+            size: Theme.fontSize + 4
         }
         Text {
             text: parent.title
@@ -191,10 +191,10 @@ PopupWindow {
                     Layout.topMargin: 4
                     spacing: 12
 
-                    Icon {
-                        code: root.powered ? 0xf00af : 0xf00b2
+                    SvgIcon {
+                        name: root.powered ? "bluetooth" : "bluetooth-off"
                         color: root.powered ? Theme.accent : Theme.muted
-                        font.pixelSize: Theme.iconSize + 6
+                        size: Theme.iconSize + 6
                         Layout.preferredWidth: 28
                     }
 
@@ -252,7 +252,7 @@ PopupWindow {
                 Separator {}
 
                 // Connected devices
-                Header { code: 0xf00b1; title: "Connected" }
+                Header { icon: "bluetooth-connected"; title: "Connected" }
                 Placeholder {
                     visible: root.connected.length === 0
                     text: "No devices connected"
@@ -274,7 +274,7 @@ PopupWindow {
                 Separator {}
 
                 // Available devices
-                Header { code: 0xf00af; title: "Available" }
+                Header { icon: "bluetooth"; title: "Available" }
                 Placeholder {
                     visible: root.available.length === 0
                     text: !root.powered ? "Bluetooth is off" : "Scanning…"

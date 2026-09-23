@@ -18,7 +18,7 @@ PopupWindow {
     property var device
     property var wifiDevice
     property var wifiNet
-    property int iconCode
+    property string iconName
 
     readonly property bool isWired: device?.type === DeviceType.Wired
 
@@ -168,15 +168,15 @@ PopupWindow {
     }
 
     component Header: RowLayout {
-        property int code
+        property string icon
         property string title
         spacing: 8
         Layout.topMargin: 4
 
-        Icon {
-            code: parent.code
+        SvgIcon {
+            name: parent.icon
             color: Theme.accent
-            font.pixelSize: Theme.fontSize + 4
+            size: Theme.fontSize + 4
         }
         Text {
             text: parent.title
@@ -225,10 +225,10 @@ PopupWindow {
                     Layout.topMargin: 4
                     spacing: 12
 
-                    Icon {
-                        code: root.iconCode
+                    SvgIcon {
+                        name: root.iconName
                         color: root.device ? Theme.accent : Theme.muted
-                        font.pixelSize: Theme.iconSize + 6
+                        size: Theme.iconSize + 6
                         Layout.preferredWidth: 28
                     }
 
@@ -262,7 +262,7 @@ PopupWindow {
                 Separator {}
 
                 // DNS
-                Header { code: 0xf07b0; title: "DNS" }
+                Header { icon: "server"; title: "DNS" }
                 RowLayout {
                     Layout.fillWidth: true
                     spacing: 6
@@ -321,7 +321,7 @@ PopupWindow {
                 Separator {}
 
                 // Wi-Fi networks
-                Header { code: 0xf05a9; title: "Wi-Fi" }
+                Header { icon: "wifi"; title: "Wi-Fi" }
                 Text {
                     visible: root.networks.length === 0
                     text: !root.wifiDevice ? "No Wi-Fi device"

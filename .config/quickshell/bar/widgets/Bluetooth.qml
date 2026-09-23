@@ -4,16 +4,16 @@ import Quickshell.Bluetooth
 import qs
 
 // Click: open Bluetooth panel. Right click: toggle the adapter's power.
-Icon {
+SvgIcon {
     id: root
 
     readonly property BluetoothAdapter adapter: Bluetooth.defaultAdapter
     readonly property bool powered: adapter?.enabled ?? false
     readonly property bool connected: Bluetooth.devices.values.some(d => d.connected)
 
-    code: !powered ? 0xf00b2
-        : connected ? 0xf00b1
-        : 0xf00af
+    name: !powered ? "bluetooth-off"
+        : connected ? "bluetooth-connected"
+        : "bluetooth"
     color: area.containsMouse || panel.visible ? Theme.accent
         : powered ? Theme.fg
         : Theme.muted

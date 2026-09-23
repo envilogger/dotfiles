@@ -16,18 +16,18 @@ Rectangle {
     // Connect once a pairing started from here completes.
     property bool connectAfterPair: false
 
-    readonly property int iconCode: {
+    readonly property string iconName: {
         const icon = device.icon;
-        return icon.includes("headset") ? 0xf02ce
-            : icon.includes("headphone") ? 0xf02cb
-            : icon.startsWith("audio") ? 0xf04c3
-            : icon.includes("mouse") ? 0xf037d
-            : icon.includes("keyboard") ? 0xf030c
-            : icon.includes("gaming") ? 0xf0296
-            : icon.includes("phone") ? 0xf011c
-            : icon.includes("computer") ? 0xf0322
-            : icon.includes("display") || icon.includes("video") ? 0xf0379
-            : 0xf00af;
+        return icon.includes("headset") ? "headset"
+            : icon.includes("headphone") ? "headphones"
+            : icon.startsWith("audio") ? "device-speaker"
+            : icon.includes("mouse") ? "mouse"
+            : icon.includes("keyboard") ? "keyboard"
+            : icon.includes("gaming") ? "device-gamepad-2"
+            : icon.includes("phone") ? "device-mobile"
+            : icon.includes("computer") ? "device-laptop"
+            : icon.includes("display") || icon.includes("video") ? "device-desktop"
+            : "bluetooth";
     }
 
     implicitHeight: row.implicitHeight + 10
@@ -77,9 +77,9 @@ Rectangle {
         anchors.rightMargin: 8
         spacing: 8
 
-        Icon {
-            code: root.iconCode
-            font.pixelSize: Theme.fontSize + 4
+        SvgIcon {
+            name: root.iconName
+            size: Theme.fontSize + 4
             color: root.device.connected ? Theme.accent : Theme.fg
             Layout.preferredWidth: 20
         }
@@ -113,10 +113,10 @@ Rectangle {
         }
 
         // Forget (unpair), shown on hover.
-        Icon {
+        SvgIcon {
             visible: root.device.paired && mouse.containsMouse || forgetMouse.containsMouse
-            code: 0xf0a7a
-            font.pixelSize: Theme.fontSize + 2
+            name: "trash"
+            size: Theme.fontSize + 2
             color: forgetMouse.containsMouse ? Theme.crit : Theme.muted
 
             MouseArea {
@@ -130,10 +130,10 @@ Rectangle {
         }
 
         // Paired
-        Icon {
+        SvgIcon {
             visible: root.device.paired && !root.device.connected
-            code: 0xf04ce
-            font.pixelSize: Theme.fontSize + 2
+            name: "star"
+            size: Theme.fontSize + 2
             color: Theme.muted
         }
     }

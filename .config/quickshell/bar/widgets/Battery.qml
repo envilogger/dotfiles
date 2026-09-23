@@ -3,9 +3,9 @@ import Quickshell
 import Quickshell.Services.UPower
 import qs
 
-// Horizontal battery: outline filled to the charge level. Grey above 40%, yellow at
-// 20-40%, red below 20%; a bolt is shown while charging. Click: open battery panel.
-Item {
+// Tabler battery icon in five fill steps, or with a bolt while plugged in. Grey above
+// 40%, yellow at 20-40%, red below 20%. Click: open battery panel.
+SvgIcon {
     id: root
 
     readonly property UPowerDevice dev: UPower.displayDevice
@@ -16,59 +16,16 @@ Item {
     readonly property color levelColor: level < 0.2 ? Theme.crit
         : level < 0.4 ? Theme.warn
         : Theme.fg
-    // Accent while hovered or the panel is open, like the other bar widgets.
-    readonly property color iconColor: area.containsMouse || panel.visible ? Theme.accent : levelColor
 
     visible: dev?.isPresent ?? false
-    implicitWidth: body.width + nub.width
-    implicitHeight: body.height
-
-    Rectangle {
-        id: body
-        width: 24
-        height: 13
-        radius: 3
-        color: "transparent"
-        border.color: root.iconColor
-        border.width: 1.5
-
-        Rectangle {
-            x: 3
-            y: 3
-            width: (parent.width - 6) * root.level
-            height: parent.height - 6
-            radius: 1
-            color: root.iconColor
-        }
-    }
-
-    Rectangle {
-        id: nub
-        anchors.left: body.right
-        anchors.verticalCenter: body.verticalCenter
-        width: 2
-        height: 5
-        radius: 1
-        color: root.iconColor
-    }
-
-    // Charging bolt, outlined in the bar colour so it reads over the fill.
-    Icon {
-        visible: root.charging
-        anchors.centerIn: body
-        code: 0xf140b
-        font.pixelSize: 13
-        color: Theme.bg
-        style: Text.Outline
-        styleColor: Theme.bg
-    }
-    Icon {
-        visible: root.charging
-        anchors.centerIn: body
-        code: 0xf140b
-        font.pixelSize: 11
-        color: Theme.fg
-    }
+    name: charging ? "battery-charging"
+        : level < 0.125 ? "battery"
+        : level < 0.375 ? "battery-1"
+        : level < 0.625 ? "battery-2"
+        : level < 0.875 ? "battery-3"
+        : "battery-4"
+    // Accent while hovered or the panel is open, like the other bar widgets.
+    color: area.containsMouse || panel.visible ? Theme.accent : levelColor
 
     // When the panel was open, clicking the battery first dismisses it via the focus grab;
     // don't let that same click reopen it.

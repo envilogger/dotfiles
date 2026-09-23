@@ -4,7 +4,7 @@ import Quickshell.Networking
 import qs
 
 // Click: open network panel.
-Icon {
+SvgIcon {
     id: root
 
     readonly property var devices: Networking.devices.values
@@ -14,13 +14,12 @@ Icon {
     readonly property var wifiNet: wifi?.networks.values.find(n => n.connected) ?? null
     readonly property real strength: wifiNet?.signalStrength ?? 0
 
-    code: wired ? 0xf0200
-        : !wifi ? 0xf05aa
-        : strength < 0.2 ? 0xf092e
-        : strength < 0.4 ? 0xf091f
-        : strength < 0.6 ? 0xf0922
-        : strength < 0.8 ? 0xf0925
-        : 0xf0928
+    name: wired ? "network"
+        : !wifi ? "wifi-off"
+        : strength < 0.25 ? "wifi-0"
+        : strength < 0.5 ? "wifi-1"
+        : strength < 0.75 ? "wifi-2"
+        : "wifi"
     color: area.containsMouse || panel.visible ? Theme.accent
         : wired || wifi ? Theme.fg
         : Theme.muted
@@ -62,7 +61,7 @@ Icon {
         device: root.wired ?? root.wifi
         wifiDevice: root.wifiDevice
         wifiNet: root.wifiNet
-        iconCode: root.code
+        iconName: root.name
 
         // Open to the right of the bar, growing upwards from the icon's bottom edge.
         anchor.window: root.QsWindow.window

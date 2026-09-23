@@ -75,15 +75,15 @@ PopupWindow {
     }
 
     component Header: RowLayout {
-        property int code
+        property string icon
         property string title
         spacing: 8
         Layout.topMargin: 4
 
-        Icon {
-            code: parent.code
+        SvgIcon {
+            name: parent.icon
             color: Theme.accent
-            font.pixelSize: Theme.fontSize + 4
+            size: Theme.fontSize + 4
         }
         Text {
             text: parent.title
@@ -144,7 +144,7 @@ PopupWindow {
 
                 Separator { visible: media.visible }
 
-                Header { code: 0xf04c3; title: "Output" }
+                Header { icon: "device-speaker"; title: "Output" }
                 VolumeRow {
                     Layout.fillWidth: true
                     node: Pipewire.defaultAudioSink
@@ -159,12 +159,12 @@ PopupWindow {
 
                 Separator {}
 
-                Header { code: 0xf036c; title: "Input" }
+                Header { icon: "microphone"; title: "Input" }
                 VolumeRow {
                     Layout.fillWidth: true
                     node: Pipewire.defaultAudioSource
-                    iconOn: 0xf036c
-                    iconOff: 0xf036d
+                    iconOn: "microphone"
+                    iconOff: "microphone-off"
                 }
                 Level { node: Pipewire.defaultAudioSource }
                 DeviceList {
@@ -176,7 +176,7 @@ PopupWindow {
 
                 Separator {}
 
-                Header { code: 0xf003b; title: "Applications" }
+                Header { icon: "apps"; title: "Applications" }
                 Text {
                     visible: root.streams.length === 0
                     text: "No apps are playing audio"
@@ -197,7 +197,7 @@ PopupWindow {
 
                 Header {
                     visible: root.recording.length > 0
-                    code: 0xf044a
+                    icon: "player-record"
                     title: "Recording"
                 }
                 Repeater {
@@ -206,8 +206,8 @@ PopupWindow {
                         required property var modelData
                         Layout.fillWidth: true
                         nodes: modelData
-                        iconOn: 0xf036c
-                        iconOff: 0xf036d
+                        iconOn: "microphone"
+                        iconOff: "microphone-off"
                     }
                 }
             }

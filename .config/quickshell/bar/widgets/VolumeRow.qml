@@ -10,8 +10,8 @@ RowLayout {
 
     property PwNode node
     property list<PwNode> nodes: node ? [node] : []
-    property int iconOn: 0xf057e
-    property int iconOff: 0xf0581
+    property string iconOn: "volume"
+    property string iconOff: "volume-3"
 
     readonly property var audios: nodes.map(n => n?.audio).filter(a => a)
     readonly property bool muted: audios.length === 0 || audios.every(a => a.muted)
@@ -20,8 +20,8 @@ RowLayout {
     spacing: 10
     enabled: audios.length > 0
 
-    Icon {
-        code: root.muted ? root.iconOff : root.iconOn
+    SvgIcon {
+        name: root.muted ? root.iconOff : root.iconOn
         color: root.muted ? Theme.muted : Theme.fg
         Layout.preferredWidth: 20
 

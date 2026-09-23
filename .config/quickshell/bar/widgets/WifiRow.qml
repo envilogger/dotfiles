@@ -74,13 +74,12 @@ Rectangle {
             Layout.fillWidth: true
             spacing: 8
 
-            Icon {
-                code: root.strength < 0.2 ? 0xf092e
-                    : root.strength < 0.4 ? 0xf091f
-                    : root.strength < 0.6 ? 0xf0922
-                    : root.strength < 0.8 ? 0xf0925
-                    : 0xf0928
-                font.pixelSize: Theme.fontSize + 4
+            SvgIcon {
+                name: root.strength < 0.25 ? "wifi-0"
+                    : root.strength < 0.5 ? "wifi-1"
+                    : root.strength < 0.75 ? "wifi-2"
+                    : "wifi"
+                size: Theme.fontSize + 4
                 color: root.network.connected ? Theme.accent : Theme.fg
                 Layout.preferredWidth: 20
             }
@@ -104,17 +103,17 @@ Rectangle {
             }
 
             // Saved network
-            Icon {
+            SvgIcon {
                 visible: root.network.known && !root.network.connected
-                code: 0xf04ce
-                font.pixelSize: Theme.fontSize + 2
+                name: "star"
+                size: Theme.fontSize + 2
                 color: Theme.muted
             }
 
-            Icon {
+            SvgIcon {
                 visible: root.secured
-                code: 0xf033e
-                font.pixelSize: Theme.fontSize + 2
+                name: "lock"
+                size: Theme.fontSize + 2
                 color: Theme.muted
             }
         }

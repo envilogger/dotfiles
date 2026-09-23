@@ -89,11 +89,11 @@ PopupWindow {
         color: Theme.overlay
     }
 
-    component NavButton: Icon {
+    component NavButton: SvgIcon {
         id: nav
         signal clicked()
         color: navMouse.containsMouse ? Theme.accent : Theme.fg
-        font.pixelSize: Theme.fontSize + 4
+        size: Theme.fontSize + 4
 
         MouseArea {
             id: navMouse
@@ -156,7 +156,7 @@ PopupWindow {
                     Layout.fillWidth: true
 
                     NavButton {
-                        code: 0xf0141
+                        name: "chevron-left"
                         onClicked: root.moveMonth(-1)
                     }
                     Text {
@@ -178,7 +178,7 @@ PopupWindow {
                         }
                     }
                     NavButton {
-                        code: 0xf0142
+                        name: "chevron-right"
                         onClicked: root.moveMonth(1)
                     }
                 }

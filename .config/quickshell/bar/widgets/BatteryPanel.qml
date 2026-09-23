@@ -161,15 +161,15 @@ PopupWindow {
     }
 
     component Header: RowLayout {
-        property int code
+        property string icon
         property string title
         spacing: 8
         Layout.topMargin: 4
 
-        Icon {
-            code: parent.code
+        SvgIcon {
+            name: parent.icon
             color: Theme.accent
-            font.pixelSize: Theme.fontSize + 4
+            size: Theme.fontSize + 4
         }
         Text {
             text: parent.title
@@ -254,7 +254,7 @@ PopupWindow {
                 Separator {}
 
                 // Charge over the last 24 hours
-                Header { code: 0xf012a; title: "Last 24 hours" }
+                Header { icon: "chart-line"; title: "Last 24 hours" }
 
                 Item {
                     id: chartBox
@@ -427,7 +427,7 @@ PopupWindow {
                 Separator {}
 
                 // Details
-                Header { code: 0xf0079; title: "Battery" }
+                Header { icon: "battery"; title: "Battery" }
                 GridLayout {
                     Layout.fillWidth: true
                     columns: 2

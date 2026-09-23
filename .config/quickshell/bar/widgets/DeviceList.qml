@@ -32,9 +32,9 @@ ColumnLayout {
                 anchors.rightMargin: 8
                 spacing: 8
 
-                Icon {
-                    code: 0xf012c
-                    font.pixelSize: Theme.fontSize + 2
+                SvgIcon {
+                    name: "check"
+                    size: Theme.fontSize + 2
                     color: Theme.accent
                     opacity: item.active ? 1 : 0
                     Layout.preferredWidth: 16

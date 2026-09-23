@@ -11,8 +11,8 @@ RowLayout {
     id: root
 
     required property list<PwNode> nodes
-    property int iconOn: 0xf057e
-    property int iconOff: 0xf0581
+    property string iconOn: "volume"
+    property string iconOff: "volume-3"
 
     readonly property PwNode node: nodes[0]
     readonly property var props: node?.properties ?? {}
@@ -50,10 +50,10 @@ RowLayout {
             implicitSize: 28
             asynchronous: true
         }
-        Icon {
+        SvgIcon {
             anchors.centerIn: parent
             visible: root.iconSource === ""
-            code: 0xf003b
+            name: "apps"
             color: Theme.muted
         }
     }

@@ -4,7 +4,7 @@ import Quickshell.Services.Pipewire
 import qs
 
 // Click: open volume panel. Right click: toggle mute. Scroll: adjust volume.
-Icon {
+SvgIcon {
     id: root
 
     readonly property PwNode sink: Pipewire.defaultAudioSink
@@ -26,10 +26,9 @@ Icon {
         color: Theme.crit
     }
 
-    code: muted || volume <= 0 ? 0xf0581
-        : volume < 0.34 ? 0xf057f
-        : volume < 0.67 ? 0xf0580
-        : 0xf057e
+    name: muted || volume <= 0 ? "volume-3"
+        : volume < 0.5 ? "volume-2"
+        : "volume"
     color: area.containsMouse || panel.visible ? Theme.accent
         : muted ? Theme.muted
         : Theme.fg

@@ -43,11 +43,12 @@ ColumnLayout {
     }
 
     // Expand / collapse
-    Icon {
+    SvgIcon {
         id: toggle
         visible: root.hidden.length > 0
         Layout.alignment: Qt.AlignHCenter
-        code: root.expanded ? 0xf0143 : 0xf0140
+        name: root.expanded ? "chevron-up" : "chevron-down"
+        size: Theme.iconSize - 2
         color: toggleArea.containsMouse ? Theme.accent : Theme.muted
 
         MouseArea {

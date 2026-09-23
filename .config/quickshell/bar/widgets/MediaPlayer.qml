@@ -79,7 +79,7 @@ ColumnLayout {
     }
     onActiveChanged: if (active) player?.positionChanged()
 
-    component Button: Icon {
+    component Button: SvgIcon {
         id: button
         signal clicked()
 
@@ -108,12 +108,12 @@ ColumnLayout {
             radius: 6
             color: Theme.surface
 
-            Icon {
+            SvgIcon {
                 anchors.centerIn: parent
                 visible: cover.status !== Image.Ready
-                code: 0xf075a
+                name: "music"
                 color: Theme.muted
-                font.pixelSize: 24
+                size: 24
             }
 
             Image {
@@ -171,8 +171,8 @@ ColumnLayout {
                 // Player switcher
                 Button {
                     visible: root.players.length > 1
-                    code: 0xf0141
-                    font.pixelSize: Theme.fontSize + 2
+                    name: "chevron-left"
+                    size: Theme.fontSize + 2
                     onClicked: root.cycle(-1)
                 }
                 Text {
@@ -184,8 +184,8 @@ ColumnLayout {
                 }
                 Button {
                     visible: root.players.length > 1
-                    code: 0xf0142
-                    font.pixelSize: Theme.fontSize + 2
+                    name: "chevron-right"
+                    size: Theme.fontSize + 2
                     onClicked: root.cycle(1)
                 }
             }
@@ -222,18 +222,18 @@ ColumnLayout {
             spacing: 18
 
             Button {
-                code: 0xf04ae
+                name: "player-skip-back-filled"
                 enabled: root.player?.canGoPrevious ?? false
                 onClicked: root.player.previous()
             }
             Button {
-                code: root.player?.isPlaying ? 0xf03e4 : 0xf040a
-                font.pixelSize: Theme.iconSize + 6
+                name: root.player?.isPlaying ? "player-pause-filled" : "player-play-filled"
+                size: Theme.iconSize + 6
                 enabled: root.player?.canTogglePlaying ?? false
                 onClicked: root.player.togglePlaying()
             }
             Button {
-                code: 0xf04ad
+                name: "player-skip-forward-filled"
                 enabled: root.player?.canGoNext ?? false
                 onClicked: root.player.next()
             }
