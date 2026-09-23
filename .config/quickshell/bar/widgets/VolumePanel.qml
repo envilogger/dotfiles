@@ -135,6 +135,15 @@ PopupWindow {
                 width: flick.width
                 spacing: 8
 
+                MediaPlayer {
+                    id: media
+                    Layout.fillWidth: true
+                    Layout.topMargin: 4
+                    active: root.visible
+                }
+
+                Separator { visible: media.visible }
+
                 Header { code: 0xf04c3; title: "Output" }
                 VolumeRow {
                     Layout.fillWidth: true
