@@ -127,7 +127,7 @@ hl.config({
     gaps_in          = 5,
     gaps_out         = 0,
 
-    border_size      = 1,
+    border_size      = 2,
 
     col              = {
       active_border   = { colors = { color("base0D", "ee"), color("base0C", "ee") }, angle = 45 },
@@ -246,12 +246,12 @@ hl.animation({ leaf = "zoomFactor", enabled = true, speed = 7, bezier = "quick" 
 hl.window_rule({
   name        = "no-border-single-tiled",
   match       = { float = false, workspace = "w[tv1]" },
-  border_size = 0,
+  border_size = 1,
 })
 hl.window_rule({
   name        = "no-border-maximized",
   match       = { float = false, workspace = "f[1]" },
-  border_size = 0,
+  border_size = 1,
 })
 
 -- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
