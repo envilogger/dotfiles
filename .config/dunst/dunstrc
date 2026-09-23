@@ -1,5 +1,40 @@
 # Dunst config. Unset options keep dunst's defaults (see /etc/dunst/dunstrc).
 #
 # Colours come from tinty: dunstrc.d/50-tinty.conf is written by tinty-hook.sh on
-# `tinty apply`. Drop-ins are only read next to this base file, so keep it even if
-# it holds no settings of its own.
+# `tinty apply`. Drop-ins are only read next to this base file, so keep it.
+# Rounding and frame width match Hyprland's windows, the font matches Quickshell.
+
+[global]
+    # Geometry: top-right, clear of the screen edge
+    origin = top-right
+    offset = (12, 12)
+    width = (300, 420)
+    height = (0, 240)
+    notification_limit = 5
+    gap_size = 8
+
+    # Shape
+    corner_radius = 10
+    frame_width = 2
+    padding = 12
+    horizontal_padding = 16
+    text_icon_padding = 14
+
+    # Text
+    font = FiraCode Nerd Font 11
+    markup = full
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    ellipsize = end
+    show_age_threshold = 60
+
+    # Icons
+    icon_position = left
+    min_icon_size = 32
+    max_icon_size = 48
+
+    # Progress bar (notify-send -h int:value:42)
+    progress_bar_height = 8
+    progress_bar_frame_width = 0
+    progress_bar_corner_radius = 4
