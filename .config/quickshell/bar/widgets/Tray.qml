@@ -4,63 +4,30 @@ import Quickshell
 import Quickshell.Services.SystemTray
 import qs
 
-// System tray. Apps listed in Theme.trayPinned are always shown; the rest are hidden
-// behind a chevron that expands them inline. Hidden apps asking for attention are
-// shown anyway.
+// System tray: every app's icon, except those listed in Theme.trayHidden.
 ColumnLayout {
     id: root
 
-    property bool expanded: false
-
-    // A pinned name matches if the tray item's id or title contains it, ignoring case
+    // A hidden name matches if the tray item's id or title contains it, ignoring case
     // (Electron apps use ids like "1Password_status_icon_1").
-    function isPinned(item) {
+    function isHidden(item) {
         const names = [item.id, item.title].map(s => (s ?? "").toLowerCase());
-        return Theme.trayPinned.some(p => names.some(n => n.includes(p.toLowerCase())));
+        return Theme.trayHidden.some(h => names.some(n => n.includes(h.toLowerCase())));
     }
 
-    readonly property var items: SystemTray.items.values
-    readonly property var pinned: items.filter(i => isPinned(i))
-    readonly property var hidden: items.filter(i => !isPinned(i))
-    readonly property var shown: pinned.concat(expanded ? hidden
-        : hidden.filter(i => i.status === Status.NeedsAttention))
+    readonly property var items: SystemTray.items.values.filter(i => !isHidden(i))
 
     visible: items.length > 0
     spacing: Theme.spacing
 
-    // Collapse when there's nothing left to hide.
-    onHiddenChanged: if (hidden.length === 0) expanded = false
-
     Repeater {
         // ScriptModel keeps icons (and open menus) as the list changes.
-        model: ScriptModel { values: root.shown }
+        model: ScriptModel { values: root.items }
 
         TrayItem {
             required property SystemTrayItem modelData
             Layout.alignment: Qt.AlignHCenter
             item: modelData
-        }
-    }
-
-    // Expand / collapse
-    SvgIcon {
-        id: toggle
-        visible: root.hidden.length > 0
-        Layout.alignment: Qt.AlignHCenter
-        name: root.expanded ? "chevron-up" : "chevron-down"
-        size: Theme.iconSize - 2
-        color: toggleArea.containsMouse ? Theme.accent : Theme.muted
-
-        MouseArea {
-            id: toggleArea
-            anchors.fill: parent
-            anchors.leftMargin: -(Theme.barWidth - toggle.width) / 2
-            anchors.rightMargin: -(Theme.barWidth - toggle.width) / 2
-            anchors.topMargin: -Theme.spacing / 2
-            anchors.bottomMargin: -Theme.spacing / 2
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.expanded = !root.expanded
         }
     }
 }

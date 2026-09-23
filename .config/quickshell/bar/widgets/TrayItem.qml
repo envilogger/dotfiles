@@ -1,11 +1,14 @@
 import QtQuick
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 import qs
 
-// One tray icon. Left click: activate (or open the menu for menu-only items).
-// Right click: app menu. Middle click: secondary action. Scroll: passed to the app.
+// One tray icon: a Tabler icon if Theme.trayIcons has one for the app, otherwise the
+// app's own icon at half colour (full colour on hover). Left click: activate (or open the
+// menu for menu-only items). Right click: app menu. Middle click: secondary action.
+// Scroll: passed to the app.
 Item {
     id: root
 
@@ -19,23 +22,38 @@ Item {
         return `file://${path}/${name.slice(name.lastIndexOf("/") + 1)}`;
     }
 
+    // Tabler icon for this app, matched like Theme.trayHidden; "" if none.
+    readonly property string themedIcon: {
+        const names = [item.id, item.title].map(s => (s ?? "").toLowerCase());
+        for (const key in Theme.trayIcons) {
+            if (names.some(n => n.includes(key.toLowerCase()))) return Theme.trayIcons[key];
+        }
+        return "";
+    }
+    readonly property bool highlighted: area.containsMouse || menu.visible
+
     implicitWidth: Theme.iconSize
     implicitHeight: Theme.iconSize
 
-    // Hover background: icons are images, so they can't take the accent colour.
-    Rectangle {
-        anchors.centerIn: parent
-        width: Theme.barWidth - 10
-        height: parent.height + 8
-        radius: 6
-        color: Theme.surface
-        visible: area.containsMouse || menu.visible
+    SvgIcon {
+        visible: root.themedIcon !== ""
+        anchors.fill: parent
+        name: root.themedIcon
+        color: root.highlighted ? Theme.accent : Theme.fg
     }
 
     IconImage {
+        visible: root.themedIcon === ""
         anchors.fill: parent
         source: root.iconSource
         asynchronous: true
+
+        // Half-desaturated and slightly dimmed so it sits with the bar's icons; full colour on hover.
+        layer.enabled: true
+        layer.effect: MultiEffect {
+            saturation: root.highlighted ? 0 : -0.5
+            brightness: root.highlighted ? 0 : -0.1
+        }
     }
 
     // Marks apps asking for attention (e.g. unread messages).

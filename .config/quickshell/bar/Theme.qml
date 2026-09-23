@@ -10,9 +10,14 @@ Singleton {
     readonly property int radius: 10
     // Popup panels scroll once taller than this fraction of the screen height.
     readonly property real panelMaxHeight: 0.5
-    // Tray apps that are always visible; the rest hide behind a chevron. An entry matches
-    // if the tray item's id or title contains it, ignoring case (e.g. "1password").
-    readonly property list<string> trayPinned: ["teams-for-linux"]
+    // Tray apps to hide completely. An entry matches if the tray item's id or title
+    // contains it, ignoring case (e.g. "1password").
+    readonly property list<string> trayHidden: []
+    // Tray apps drawn with a Tabler icon from icons/ (matched like trayHidden) instead of
+    // their own. Apps without one are shown at half colour, full colour on hover.
+    readonly property var trayIcons: ({
+        "teams-for-linux": "brand-teams",
+    })
 
     readonly property string font: "FiraCode Nerd Font"
     // Propo variant: icon advance width matches the glyph, so icons centre correctly.
