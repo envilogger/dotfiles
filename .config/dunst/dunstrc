@@ -1,0 +1,5 @@
+# Dunst config. Unset options keep dunst's defaults (see /etc/dunst/dunstrc).
+#
+# Colours come from tinty: dunstrc.d/50-tinty.conf is written by tinty-hook.sh on
+# `tinty apply`. Drop-ins are only read next to this base file, so keep it even if
+# it holds no settings of its own.

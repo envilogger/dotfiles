@@ -12,4 +12,7 @@ hooks = [
     "$HOME/.config/hypr/tinty-hook.sh",
     "$HOME/.config/ghostty/tinty-hook.sh",
     "$HOME/.config/tmux/tinty-hook.sh",
+    "$HOME/.config/dunst/tinty-hook.sh",
+    "$HOME/.config/btop/tinty-hook.sh",
+    "$HOME/.config/gtk-3.0/tinty-hook.sh",
 ]
