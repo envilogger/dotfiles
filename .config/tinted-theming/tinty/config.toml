@@ -10,4 +10,5 @@ items = []
 hooks = [
     "$HOME/.config/quickshell/tinty-hook.sh",
     "$HOME/.config/hypr/tinty-hook.sh",
+    "$HOME/.config/ghostty/tinty-hook.sh",
 ]

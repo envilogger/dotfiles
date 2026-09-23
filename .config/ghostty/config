@@ -1,7 +1,8 @@
 font-family = FiraCode Nerd Font Mono
 font-size = 12
 font-style = Medium
-theme = dark:Catppuccin Frappe,light:Catppuccin Latte
+# Colours come from tinty: themes/tinty is written by tinty-hook.sh on `tinty apply`.
+theme = tinty
 background-opacity = 1
 background-blur = true
 shell-integration-features = ssh-terminfo
