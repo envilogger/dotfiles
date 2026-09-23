@@ -4,9 +4,9 @@ return {
     branch = "master",
     event = "BufEnter",
     build = ":TSUpdate",
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
-    end,
+    -- config = function(_, opts)
+    --   require("nvim-treesitter.configs").setup(opts)
+    -- end,
     opts = {
       indent = { enabled = true },
       highlight = { enabled = true, additional_vim_regex_highlighting = false },
