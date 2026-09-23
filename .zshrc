@@ -50,3 +50,6 @@ fi
 source "$ZSH"/oh-my-zsh.sh
 source "$ZSH_CUSTOM"/aliases.zsh
 PROMPT="${MACHINE_COLOR}${MACHINE_LABEL}%f %F{cyan}%1~%f $ "
+
+# lazygit: tinty.yml (theme, written by ~/.config/lazygit/tinty-hook.sh) over config.yml
+export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/tinty.yml"

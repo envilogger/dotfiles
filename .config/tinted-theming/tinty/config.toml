@@ -15,4 +15,5 @@ hooks = [
     "$HOME/.config/dunst/tinty-hook.sh",
     "$HOME/.config/btop/tinty-hook.sh",
     "$HOME/.config/gtk-3.0/tinty-hook.sh",
+    "$HOME/.config/lazygit/tinty-hook.sh",
 ]
