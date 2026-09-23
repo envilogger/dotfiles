@@ -28,13 +28,26 @@ accent = $(rgb base0D)
 accent_secondary = $(rgb base0C)
 EOF
 
+# hyprtoolkit <0.6 spins at 100% CPU forever once its watched config changes (fixed
+# upstream in e51fde5), so restart its apps instead of relying on the live reload.
+# hyprlauncher is started on demand by the menu bind; hyprpaper is restarted below.
+pkill -x hyprlauncher || true
+
+# Fresh hyprpaper, detached from tinty; reads the wallpaper.png link via hyprpaper.conf.
+restart_hyprpaper() {
+    pkill -x hyprpaper || true
+    for _ in {1..40}; do pgrep -x hyprpaper >/dev/null || break; sleep 0.05; done
+    setsid -f hyprpaper >/dev/null 2>&1
+}
+
 # Nothing more to do outside a Hyprland session (e.g. tinty run over ssh).
 [[ -n ${HYPRLAND_INSTANCE_SIGNATURE:-} ]] || exit 0
 hyprctl reload >/dev/null
 
 # Wallpaper: the scheme's image from ~/pictures/wallpapers (see the README there), framed
 # in base00 by frame-wallpaper, linked as $state/wallpaper.png for hyprpaper.conf and
-# set live. Each framed image gets its own name, so hyprpaper never shows a cached one.
+# shown by restarting hyprpaper. Each framed image gets its own name, so hyprpaper never
+# shows a cached one.
 wallpapers=$HOME/pictures/wallpapers
 state=$(dirname "$palette")
 
@@ -56,9 +69,13 @@ find_wallpaper() {
     return 1
 }
 
-image=$(find_wallpaper) || { echo "tinty-hook: no wallpaper for this scheme in $wallpapers" >&2; exit 0; }
+image=$(find_wallpaper) || {
+    echo "tinty-hook: no wallpaper for this scheme in $wallpapers" >&2
+    restart_hyprpaper
+    exit 0
+}
 framed=$state/wallpaper-$(date +%s%N).png
 frame-wallpaper "$image" "$framed" >/dev/null
 ln -sfn "$(basename "$framed")" "$state/wallpaper.png"
-hyprctl hyprpaper wallpaper ",$framed,cover" >/dev/null
+restart_hyprpaper
 find "$state" -maxdepth 1 -name 'wallpaper-*.png' ! -path "$framed" -delete
