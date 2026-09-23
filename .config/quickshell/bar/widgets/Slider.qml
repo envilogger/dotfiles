@@ -45,6 +45,7 @@ Item {
         id: mouse
         anchors.fill: parent
         hoverEnabled: true
+        preventStealing: true // keep drags when inside a Flickable
         onPressed: e => root.setFromX(e.x)
         onPositionChanged: e => { if (pressed) root.setFromX(e.x); }
         onWheel: e => root.moved(Math.max(0, Math.min(1, root.value + (e.angleDelta.y > 0 ? 0.05 : -0.05))))

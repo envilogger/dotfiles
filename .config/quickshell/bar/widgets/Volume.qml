@@ -14,6 +14,18 @@ Icon {
     // Required so the sink's audio properties are bound and kept live.
     PwObjectTracker { objects: [root.sink] }
 
+    // Dot shown while an app is recording from a microphone.
+    Rectangle {
+        visible: panel.recording.length > 0
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.rightMargin: -3
+        width: 6
+        height: 6
+        radius: 3
+        color: Theme.crit
+    }
+
     code: muted || volume <= 0 ? 0xf0581
         : volume < 0.34 ? 0xf057f
         : volume < 0.67 ? 0xf0580
@@ -56,6 +68,7 @@ Icon {
     VolumePanel {
         id: panel
         onVisibleChanged: if (!visible) root.panelClosedAt = Date.now()
+        maxHeight: (root.QsWindow.window?.height ?? 800) - 2 * Theme.padding
 
         // Open to the right of the bar, growing upwards from the icon's bottom edge.
         anchor.window: root.QsWindow.window

@@ -9,18 +9,42 @@ import qs
 PopupWindow {
     id: root
 
+    // Tallest the panel may get before its contents scroll.
+    property real maxHeight: 800
+
     readonly property var nodes: Pipewire.nodes.values
     readonly property list<PwNode> sinks: nodes.filter(n => n.audio && !n.isStream && n.isSink)
     readonly property list<PwNode> sources: nodes.filter(n => n.audio && !n.isStream && !n.isSink)
     readonly property list<PwNode> streams: nodes.filter(n => n.audio && n.type === PwNodeType.AudioOutStream)
+    readonly property list<PwNode> inStreams: nodes.filter(n => n.audio && n.type === PwNodeType.AudioInStream)
+    // Apps capturing audio, minus monitor captures (visualizers, level meters).
+    readonly property list<PwNode> recording: inStreams.filter(n => n.properties["stream.monitor"] !== "true")
 
-    implicitWidth: 340
-    implicitHeight: content.implicitHeight + 2 * Theme.padding + 4
+    // One row per app rather than per stream.
+    readonly property var appGroups: groupByApp(streams)
+    readonly property var recordingGroups: groupByApp(recording)
+
+    readonly property int margin: Theme.padding + 2
+
+    function groupByApp(nodes) {
+        const groups = new Map();
+        for (const n of nodes) {
+            const p = n.properties;
+            const key = p["application.process.binary"] || p["application.name"] || n.name;
+            if (!groups.has(key)) groups.set(key, []);
+            groups.get(key).push(n);
+        }
+        return [...groups.values()];
+    }
+
+    implicitWidth: 360
+    implicitHeight: Math.min(maxHeight, content.implicitHeight + 2 * margin)
     color: "transparent"
 
-    // Bind audio properties (volume/mute) of everything shown while open.
+    // Bind audio properties (volume/mute) of everything shown while open. Capture
+    // streams are always tracked so the bar icon can show when the mic is in use.
     PwObjectTracker {
-        objects: root.visible ? [...root.sinks, ...root.sources, ...root.streams] : []
+        objects: root.visible ? [...root.sinks, ...root.sources, ...root.streams, ...root.inStreams] : root.inStreams
     }
 
     // Close when clicking outside the panel. The grab is activated shortly after the
@@ -35,12 +59,19 @@ PopupWindow {
     Timer {
         id: grabDelay
         interval: 100
-        onTriggered: grab.active = root.visible
+        onTriggered: {
+            grab.active = root.visible;
+            if (root.visible) frame.forceActiveFocus();
+        }
     }
 
     onVisibleChanged: {
-        if (visible) grabDelay.restart();
-        else grab.active = false;
+        if (visible) {
+            grabDelay.restart();
+            flick.contentY = 0;
+        } else {
+            grab.active = false;
+        }
     }
 
     component Header: RowLayout {
@@ -72,6 +103,7 @@ PopupWindow {
     }
 
     Rectangle {
+        id: frame
         anchors.fill: parent
         radius: Theme.radius
         color: Theme.bg
@@ -80,82 +112,97 @@ PopupWindow {
         focus: true
         Keys.onEscapePressed: root.visible = false
 
-        ColumnLayout {
-            id: content
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: parent.top
-                margins: Theme.padding + 2
-            }
-            spacing: 8
+        Flickable {
+            id: flick
+            anchors.fill: parent
+            anchors.margins: root.margin
+            contentHeight: content.implicitHeight
+            flickableDirection: Flickable.VerticalFlick
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
 
-            Header { code: 0xf04c3; title: "Output" }
-            VolumeRow {
-                Layout.fillWidth: true
-                node: Pipewire.defaultAudioSink
-            }
-            DeviceList {
-                Layout.fillWidth: true
-                devices: root.sinks
-                current: Pipewire.defaultAudioSink
-                onSelected: node => Pipewire.preferredDefaultAudioSink = node
-            }
+            ColumnLayout {
+                id: content
+                width: flick.width
+                spacing: 8
 
-            Separator {}
-
-            Header { code: 0xf036c; title: "Input" }
-            VolumeRow {
-                Layout.fillWidth: true
-                node: Pipewire.defaultAudioSource
-                iconOn: 0xf036c
-                iconOff: 0xf036d
-            }
-            DeviceList {
-                Layout.fillWidth: true
-                devices: root.sources
-                current: Pipewire.defaultAudioSource
-                onSelected: node => Pipewire.preferredDefaultAudioSource = node
-            }
-
-            Separator {}
-
-            Header { code: 0xf003b; title: "Applications" }
-            Text {
-                visible: root.streams.length === 0
-                text: "No apps are playing audio"
-                color: Theme.muted
-                font.family: Theme.font
-                font.pixelSize: Theme.fontSize
-            }
-            Repeater {
-                model: root.streams
-
-                ColumnLayout {
-                    id: stream
-                    required property PwNode modelData
+                Header { code: 0xf04c3; title: "Output" }
+                VolumeRow {
                     Layout.fillWidth: true
-                    spacing: 2
+                    node: Pipewire.defaultAudioSink
+                }
+                DeviceList {
+                    Layout.fillWidth: true
+                    devices: root.sinks
+                    current: Pipewire.defaultAudioSink
+                    onSelected: node => Pipewire.preferredDefaultAudioSink = node
+                }
 
-                    Text {
+                Separator {}
+
+                Header { code: 0xf036c; title: "Input" }
+                VolumeRow {
+                    Layout.fillWidth: true
+                    node: Pipewire.defaultAudioSource
+                    iconOn: 0xf036c
+                    iconOff: 0xf036d
+                }
+                DeviceList {
+                    Layout.fillWidth: true
+                    devices: root.sources
+                    current: Pipewire.defaultAudioSource
+                    onSelected: node => Pipewire.preferredDefaultAudioSource = node
+                }
+
+                Separator {}
+
+                Header { code: 0xf003b; title: "Applications" }
+                Text {
+                    visible: root.streams.length === 0
+                    text: "No apps are playing audio"
+                    color: Theme.muted
+                    font.family: Theme.font
+                    font.pixelSize: Theme.fontSize
+                }
+                Repeater {
+                    model: root.appGroups
+                    StreamRow {
+                        required property var modelData
                         Layout.fillWidth: true
-                        text: {
-                            const p = stream.modelData.properties;
-                            const app = p["application.name"] || stream.modelData.description || stream.modelData.name;
-                            const media = p["media.name"];
-                            return media && media !== app ? app + " — " + media : app;
-                        }
-                        elide: Text.ElideRight
-                        color: Theme.muted
-                        font.family: Theme.font
-                        font.pixelSize: Theme.smallFontSize + 1
+                        nodes: modelData
                     }
-                    VolumeRow {
+                }
+
+                Separator { visible: root.recording.length > 0 }
+
+                Header {
+                    visible: root.recording.length > 0
+                    code: 0xf044a
+                    title: "Recording"
+                }
+                Repeater {
+                    model: root.recordingGroups
+                    StreamRow {
+                        required property var modelData
                         Layout.fillWidth: true
-                        node: stream.modelData
+                        nodes: modelData
+                        iconOn: 0xf036c
+                        iconOff: 0xf036d
                     }
                 }
             }
+        }
+
+        // Scroll indicator, only when the contents overflow.
+        Rectangle {
+            visible: flick.contentHeight > flick.height
+            anchors.right: parent.right
+            anchors.rightMargin: 4
+            y: flick.y + flick.visibleArea.yPosition * flick.height
+            width: 3
+            height: flick.visibleArea.heightRatio * flick.height
+            radius: 1.5
+            color: Theme.overlay
         }
     }
 }
