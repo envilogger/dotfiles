@@ -1,4 +1,4 @@
-PATH="$HOME/.cargo/bin:$HOME/.local/npm/bin:$PATH"
+PATH="$HOME/.cargo/bin:$HOME/.local/npm/bin:$PATH:$HOME/.local/bin"
 DOTFILES_DIR="$HOME/.dotfiles"
 
 alias dot="git --git-dir=$DOTFILES_DIR --work-tree=$HOME"
