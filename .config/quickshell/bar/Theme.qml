@@ -13,7 +13,7 @@ Singleton {
     // Tray apps to hide completely. An entry matches if the tray item's id or title
     // contains it, ignoring case (e.g. "1password").
     readonly property list<string> trayHidden: []
-    // Tray apps drawn with a Tabler icon from icons/ (matched like trayHidden) instead of
+    // Tray apps drawn with a Tabler icon (matched like trayHidden) instead of
     // their own. Apps without one are shown at half colour, full colour on hover.
     readonly property var trayIcons: ({
         "teams-for-linux": "brand-teams",
@@ -25,6 +25,8 @@ Singleton {
     readonly property int fontSize: 12
     readonly property int iconSize: 18
     readonly property int smallFontSize: 10
+    // Line thickness of Tabler outline icons (Tabler's default is 2).
+    readonly property real iconStroke: 2
 
     readonly property color bg: "#1e1e2e"
     readonly property color surface: "#313244"
