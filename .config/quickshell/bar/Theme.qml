@@ -2,6 +2,7 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import Quickshell.Io
 
 Singleton {
     readonly property int barWidth: 42
@@ -30,14 +31,40 @@ Singleton {
     // Line thickness of Tabler outline icons (Tabler's default is 2).
     readonly property real iconStroke: 2
 
-    // Nord (nordtheme.com). Muted text uses a lighter grey than nord3 so it stays readable.
-    readonly property color bg: "#2E3440"       // nord0
-    readonly property color surface: "#3B4252"  // nord1
-    readonly property color overlay: "#4C566A"  // nord3
-    readonly property color fg: "#D8DEE9"       // nord4
-    readonly property color muted: "#7B88A1"
-    readonly property color accent: "#88C0D0"   // nord8
-    readonly property color warn: "#EBCB8B"     // nord13
-    readonly property color crit: "#BF616A"     // nord11
-    readonly property color good: "#A3BE8C"     // nord14
+    // Colours come from the base24 palette written by ~/.config/quickshell/apply-theme.sh
+    // (from ~/.config/themes/<name>/), and follow it live. Nord until a theme is applied.
+    FileView {
+        id: paletteFile
+        path: `${Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state"}/theme/palette.json`
+        watchChanges: true
+        onFileChanged: reload()
+        blockLoading: true
+    }
+
+    readonly property var fallbackPalette: ({
+        base00: "#2E3440", base01: "#3B4252", base03: "#4C566A", base05: "#E5E9F0",
+        base08: "#BF616A", base0A: "#EBCB8B", base0B: "#A3BE8C", base0C: "#88C0D0",
+    })
+    readonly property var palette: {
+        try {
+            return JSON.parse(paletteFile.text()).palette ?? fallbackPalette;
+        } catch (e) {
+            return fallbackPalette;
+        }
+    }
+
+    function mix(a: color, b: color, t: real): color {
+        return Qt.rgba(a.r + (b.r - a.r) * t, a.g + (b.g - a.g) * t, a.b + (b.b - a.b) * t, 1);
+    }
+
+    readonly property color bg: palette.base00
+    readonly property color surface: palette.base01
+    readonly property color overlay: palette.base03
+    readonly property color fg: palette.base05
+    // Schemes have no readable muted text colour: base03 is too dim, base04 too bright.
+    readonly property color muted: mix(palette.base03, palette.base05, 0.35)
+    readonly property color accent: palette.base0C
+    readonly property color warn: palette.base0A
+    readonly property color crit: palette.base08
+    readonly property color good: palette.base0B
 }

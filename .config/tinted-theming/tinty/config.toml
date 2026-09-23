@@ -1,0 +1,12 @@
+# tinty: https://github.com/tinted-theming/tinty
+shell = "bash -c '{}'"
+default-scheme = "base16-nord"
+
+# No app templates yet. An explicit empty list stops tinty from adding its default
+# tinted-shell item, which would recolour the terminal on every apply.
+items = []
+
+# Run on every apply, with the scheme's colours in TINTY_SCHEME_* variables.
+hooks = [
+    "$HOME/.config/quickshell/tinty-hook.sh",
+]

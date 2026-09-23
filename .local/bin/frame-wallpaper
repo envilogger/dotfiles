@@ -5,7 +5,8 @@
 # Usage: frame-wallpaper.sh <image> [output.png] [monitor]
 #
 # Geometry comes from the running Hyprland: monitor size and scale, the space reserved
-# by the bar, gaps_out, border_size and rounding. The colour is Theme.bg.
+# by the bar, gaps_out, border_size and rounding. The colour is the bar background:
+# base00 of the palette applied with ~/.config/quickshell/apply-theme.sh.
 set -euo pipefail
 
 usage() { echo "Usage: ${0##*/} <image> [output.png] [monitor]" >&2; exit 1; }
@@ -14,12 +15,13 @@ usage() { echo "Usage: ${0##*/} <image> [output.png] [monitor]" >&2; exit 1; }
 input=$1
 output=${2:-"${input%.*}-framed.png"}
 monitor=${3:-}
-theme=${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/bar/Theme.qml
+palette=${XDG_STATE_HOME:-$HOME/.local/state}/theme/palette.json
 
 # Hide warnings about optional vips modules (heif, magick, ...) that aren't installed.
 vips() { command vips "$@" 2> >(grep -vE 'vips-modules|^$' >&2); }
 
-color=$(grep -oP 'property color bg:\s*"\K#[0-9a-fA-F]+' "$theme")
+[[ -f $palette ]] || { echo "No theme applied yet ($palette); run apply-theme.sh first" >&2; exit 1; }
+color=$(jq -r '.palette.base00' "$palette")
 
 # Monitor: size in physical pixels, scale, and reserved space (left top right bottom)
 # in logical pixels. Defaults to the focused monitor.
