@@ -8,6 +8,8 @@ Singleton {
     readonly property int spacing: 14
     readonly property int padding: 12
     readonly property int radius: 10
+    // Popup panels scroll once taller than this fraction of the screen height.
+    readonly property real panelMaxHeight: 0.3
 
     readonly property string font: "FiraCode Nerd Font"
     // Propo variant: icon advance width matches the glyph, so icons centre correctly.

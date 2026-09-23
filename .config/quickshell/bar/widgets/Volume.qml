@@ -78,7 +78,7 @@ Icon {
     VolumePanel {
         id: panel
         onVisibleChanged: if (!visible) root.panelClosedAt = Date.now()
-        maxHeight: (root.QsWindow.window?.height ?? 800) - 2 * Theme.padding
+        maxHeight: (root.QsWindow.window?.screen?.height ?? 1080) * Theme.panelMaxHeight
 
         // Open to the right of the bar, growing upwards from the icon's bottom edge.
         anchor.window: root.QsWindow.window
