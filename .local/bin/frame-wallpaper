@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# Frame a wallpaper in the bar's colour, so that with a single tiled window the whole
+# area around it (bar, gaps, rounded corners) is one solid colour.
+#
+# Usage: frame-wallpaper.sh <image> [output.png] [monitor]
+#
+# Geometry comes from the running Hyprland: monitor size and scale, the space reserved
+# by the bar, gaps_out, border_size and rounding. The colour is Theme.bg.
+set -euo pipefail
+
+usage() { echo "Usage: ${0##*/} <image> [output.png] [monitor]" >&2; exit 1; }
+[[ $# -ge 1 && -f $1 ]] || usage
+
+input=$1
+output=${2:-"${input%.*}-framed.png"}
+monitor=${3:-}
+theme="$(dirname "$(realpath "$0")")/Theme.qml"
+
+# Hide warnings about optional vips modules (heif, magick, ...) that aren't installed.
+vips() { command vips "$@" 2> >(grep -vE 'vips-modules|^$' >&2); }
+
+color=$(grep -oP 'property color bg:\s*"\K#[0-9a-fA-F]+' "$theme")
+
+# Monitor: size in physical pixels, scale, and reserved space (left top right bottom)
+# in logical pixels. Defaults to the focused monitor.
+mon=$(hyprctl monitors -j | jq -er --arg name "$monitor" '
+    (if $name != "" then map(select(.name == $name)) else map(select(.focused)) + . end)[0]
+    // error("No monitor named \($name)")
+    | (if .transform % 2 == 1 then [.height, .width] else [.width, .height] end)
+      + [.scale] + .reserved
+    | join(" ")')
+read -r width height scale res_l res_t res_r res_b <<<"$mon"
+
+option() { hyprctl getoption "$1" -j | jq -r '.css // .int'; }
+read -r gap_t gap_r gap_b gap_l <<<"$(option general:gaps_out)"
+border=$(option general:border_size)
+rounding=$(option decoration:rounding)
+
+# The cut-out where the wallpaper stays visible, in physical pixels. It's inset by a
+# pixel and uses the border's outer radius, so it sits entirely under the window and
+# no wallpaper peeks out at the edges or rounded corners.
+read -r x y w h r < <(jq -nr \
+    --argjson W "$width" --argjson H "$height" --argjson s "$scale" \
+    --argjson rl "$res_l" --argjson rt "$res_t" --argjson rr "$res_r" --argjson rb "$res_b" \
+    --argjson gt "$gap_t" --argjson gr "$gap_r" --argjson gb "$gap_b" --argjson gl "$gap_l" \
+    --argjson border "$border" --argjson rounding "$rounding" '
+    (($rl + $gl) * $s + 1) as $x0 | (($rt + $gt) * $s + 1) as $y0
+    | ($W - ($rr + $gr) * $s - 1) as $x1 | ($H - ($rb + $gb) * $s - 1) as $y1
+    | (if $rounding > 0 then ($rounding + $border) * $s else 0 end) as $r
+    | [$x0, $y0, $x1 - $x0, $y1 - $y0, $r] | map(round) | join(" ")')
+
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+cat >"$tmp/frame.svg" <<EOF
+<svg xmlns="http://www.w3.org/2000/svg" width="$width" height="$height">
+  <path fill="$color" fill-rule="evenodd" d="M0 0H$width V$height H0Z
+    M$((x + r)) $y H$((x + w - r)) A$r $r 0 0 1 $((x + w)) $((y + r))
+    V$((y + h - r)) A$r $r 0 0 1 $((x + w - r)) $((y + h))
+    H$((x + r)) A$r $r 0 0 1 $x $((y + h - r))
+    V$((y + r)) A$r $r 0 0 1 $((x + r)) $y Z"/>
+</svg>
+EOF
+
+# Scale the wallpaper to cover the screen (cropping the overflow), then frame it.
+vips thumbnail "$input" "$tmp/scaled.v" "$width" --height "$height" --size both --crop centre
+vips colourspace "$tmp/scaled.v" "$tmp/srgb.v" srgb
+vips composite2 "$tmp/srgb.v" "$tmp/frame.svg" "$tmp/out.v" over
+vips flatten "$tmp/out.v" "$output"
+
+echo "$output (${width}x$height, bar colour $color)"
