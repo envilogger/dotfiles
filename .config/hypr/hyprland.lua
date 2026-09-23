@@ -94,6 +94,33 @@ hl.env("HYPRCURSOR_SIZE", "24")
 ---- LOOK AND FEEL ----
 -----------------------
 
+-- Colours come from the base24 palette that tinty's hook (~/.config/quickshell/tinty-hook.sh)
+-- writes to $XDG_STATE_HOME/theme/palette.json; ~/.config/hypr/tinty-hook.sh then reloads
+-- Hyprland. Falls back to Nord if the file is missing.
+local palette = {
+  base00 = "2e3440", base01 = "3b4252", base02 = "434c5e", base03 = "4c566a",
+  base04 = "d8dee9", base05 = "e5e9f0", base08 = "bf616a", base0C = "88c0d0",
+  base0D = "81a1c1", base0E = "b48ead", base11 = "2e3440",
+}
+local variant = "dark"
+do
+  local state = os.getenv("XDG_STATE_HOME") or (os.getenv("HOME") .. "/.local/state")
+  local file = io.open(state .. "/theme/palette.json")
+  if file then
+    local json = file:read("a")
+    variant = json:match('"variant"%s*:%s*"(%a+)"') or variant
+    for key, hex in json:gmatch('"(base%x%x)"%s*:%s*"#(%x+)"') do
+      palette[key] = hex
+    end
+    file:close()
+  end
+end
+
+-- "rgba(rrggbbaa)" for a palette slot
+local function color(key, alpha)
+  return "rgba(" .. palette[key] .. (alpha or "ff") .. ")"
+end
+
 -- Refer to https://wiki.hypr.land/Configuring/Basics/Variables/
 hl.config({
   general = {
@@ -103,8 +130,8 @@ hl.config({
     border_size      = 1,
 
     col              = {
-      active_border   = { colors = { "rgba(33ccffee)", "rgba(00ff99ee)" }, angle = 45 },
-      inactive_border = "rgba(595959aa)",
+      active_border   = { colors = { color("base0D", "ee"), color("base0C", "ee") }, angle = 45 },
+      inactive_border = color("base03", "aa"),
     },
 
     -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
@@ -128,7 +155,8 @@ hl.config({
       enabled      = true,
       range        = 4,
       render_power = 3,
-      color        = 0xee1a1a1a,
+      -- Darkest background on dark themes; on light ones a soft shadow in the text colour
+      color        = variant == "light" and color("base05", "55") or color("base11", "ee"),
     },
 
     blur             = {
@@ -136,6 +164,29 @@ hl.config({
       size     = 3,
       passes   = 1,
       vibrancy = 0.1696,
+    },
+  },
+
+  -- Groups use base0E so they stand apart from normal borders; locked groups use base08
+  group = {
+    col = {
+      border_active          = color("base0E", "ee"),
+      border_inactive        = color("base03", "aa"),
+      border_locked_active   = color("base08", "ee"),
+      border_locked_inactive = color("base02", "aa"),
+    },
+
+    groupbar = {
+      col = {
+        active          = color("base0E"),
+        inactive        = color("base03"),
+        locked_active   = color("base08"),
+        locked_inactive = color("base02"),
+      },
+      text_color                 = color("base05"),
+      text_color_inactive        = color("base04"),
+      text_color_locked_active   = color("base05"),
+      text_color_locked_inactive = color("base04"),
     },
   },
 
@@ -189,6 +240,19 @@ hl.animation({ leaf = "zoomFactor", enabled = true, speed = 7, bezier = "quick" 
 --     border_size = 0,
 --     rounding    = 0,
 -- })
+
+-- No border when a tiled window is alone on its workspace
+-- w[tv1] = exactly one tiled, visible window; f[1] = maximized window
+hl.window_rule({
+  name        = "no-border-single-tiled",
+  match       = { float = false, workspace = "w[tv1]" },
+  border_size = 0,
+})
+hl.window_rule({
+  name        = "no-border-maximized",
+  match       = { float = false, workspace = "f[1]" },
+  border_size = 0,
+})
 
 -- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
 hl.config({

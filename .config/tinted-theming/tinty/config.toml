@@ -9,4 +9,5 @@ items = []
 # Run on every apply, with the scheme's colours in TINTY_SCHEME_* variables.
 hooks = [
     "$HOME/.config/quickshell/tinty-hook.sh",
+    "$HOME/.config/hypr/tinty-hook.sh",
 ]
