@@ -10,6 +10,8 @@ Singleton {
     readonly property int radius: 10
     // Popup panels scroll once taller than this fraction of the screen height.
     readonly property real panelMaxHeight: 0.5
+    // Workspaces shown in the bar (1..n), matching the mainMod + 0-9 binds.
+    readonly property int workspaceCount: 10
     // Tray apps to hide completely. An entry matches if the tray item's id or title
     // contains it, ignoring case (e.g. "1password").
     readonly property list<string> trayHidden: []
