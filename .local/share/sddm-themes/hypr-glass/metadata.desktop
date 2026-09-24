@@ -1,0 +1,10 @@
+[SddmGreeterTheme]
+Name=hypr-glass
+Description=Blurred wallpaper, clock and a pill-shaped password field, matching hyprlock.conf
+Type=sddm-theme
+Version=1.0
+MainScript=Main.qml
+ConfigFile=theme.conf
+Theme-Id=hypr-glass
+Theme-API=2.0
+QtVersion=6
