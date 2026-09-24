@@ -1,5 +1,5 @@
 ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="robbyrussell"
+ZSH_THEME=""
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -20,15 +20,13 @@ COMPLETION_WAITING_DOTS="true"
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 case "$HOST" in
-  laptop.envi.cc)
-    MACHINE_COLOR="%F{green}"
-    MACHINE_LABEL="💻 [laptop]"
-    ;;
-  office.envi.cc)
-    MACHINE_COLOR="%F{red}"
-    MACHINE_LABEL="🖥️ [office]"
-    ;;
+  archibook)    MACHINE_ICON="💻" ;;
+  archistation) MACHINE_ICON="🖥️" ;;
 esac
+
+# Shown by starship (env_var.* in ~/.config/starship.toml)
+[[ -n $MACHINE_ICON ]] && export STARSHIP_MACHINE=$MACHINE_ICON
+[[ -n $SSH_CONNECTION || -n $SSH_TTY ]] && export STARSHIP_SSH=1
 
 plugins=(git kubectl kubectx)
 
@@ -49,10 +47,13 @@ fi
 
 source "$ZSH"/oh-my-zsh.sh
 source "$ZSH_CUSTOM"/aliases.zsh
-PROMPT="${MACHINE_COLOR}${MACHINE_LABEL}%f %F{cyan}%1~%f $ "
+# PROMPT="${MACHINE_COLOR}${MACHINE_LABEL}%f %F{cyan}%1~%f $ "
 
 # lazygit: tinty.yml (theme, written by ~/.config/lazygit/tinty-hook.sh) over config.yml
 export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/tinty.yml"
 
 # fzf: Ctrl+R history, Ctrl+T files, Alt+C cd
 source <(fzf --zsh)
+
+# Prompt (config: ~/.config/starship.toml)
+eval "$(starship init zsh)"

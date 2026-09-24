@@ -1,0 +1,39 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Line 1: directory + git info, line 2: the prompt symbol
+format = """
+${env_var.STARSHIP_SSH}\
+${env_var.STARSHIP_MACHINE}\
+$directory\
+$git_branch\
+$git_status\
+$line_break\
+$character"""
+
+# Blank line between prompts
+add_newline = true
+
+# SSH marker and machine icon, both set in ~/.zshrc
+[env_var.STARSHIP_SSH]
+format = '\[🔐 [SSH]($style)\] '
+style = "bold red"
+
+[env_var.STARSHIP_MACHINE]
+format = "$env_value "
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold cyan"
+
+[git_branch]
+format = "on [$symbol$branch]($style) "
+style = "bold purple"
+
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = "bold red"
+
+[character]
+success_symbol = "[λ](bold green)"
+error_symbol = "[λ](bold red)"
