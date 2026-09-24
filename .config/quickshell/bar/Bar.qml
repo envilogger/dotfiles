@@ -11,6 +11,7 @@ PanelWindow {
         top: true
         bottom: true
     }
+
     implicitWidth: Theme.barWidth
     color: Theme.bg
 
@@ -23,7 +24,9 @@ PanelWindow {
         }
         spacing: Theme.spacing
 
-        ArchLogo { Layout.alignment: Qt.AlignHCenter }
+        ArchLogo {
+            Layout.alignment: Qt.AlignHCenter
+        }
         Workspace {
             Layout.alignment: Qt.AlignHCenter
             screen: bar.screen
@@ -39,11 +42,23 @@ PanelWindow {
         }
         spacing: Theme.spacing
 
-        Tray { Layout.alignment: Qt.AlignHCenter }
-        Volume { Layout.alignment: Qt.AlignHCenter }
-        Network { Layout.alignment: Qt.AlignHCenter }
-        Bluetooth { Layout.alignment: Qt.AlignHCenter }
-        Battery { Layout.alignment: Qt.AlignHCenter }
-        Clock { Layout.alignment: Qt.AlignHCenter }
+        Tray {
+            Layout.alignment: Qt.AlignHCenter
+        }
+        Volume {
+            Layout.alignment: Qt.AlignHCenter
+        }
+        Network {
+            Layout.alignment: Qt.AlignHCenter
+        }
+        Bluetooth {
+            Layout.alignment: Qt.AlignHCenter
+        }
+        Battery {
+            Layout.alignment: Qt.AlignHCenter
+        }
+        Clock {
+            Layout.alignment: Qt.AlignHCenter
+        }
     }
 }

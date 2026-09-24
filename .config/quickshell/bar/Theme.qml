@@ -19,8 +19,8 @@ Singleton {
     // Tray apps drawn with a Tabler icon (matched like trayHidden) instead of
     // their own. Apps without one are shown at half colour, full colour on hover.
     readonly property var trayIcons: ({
-        "teams-for-linux": "brand-teams",
-    })
+        // "teams-for-linux": "brand-teams",
+        })
 
     readonly property string font: "FiraCode Nerd Font"
     // Propo variant: icon advance width matches the glyph, so icons centre correctly.
@@ -42,9 +42,15 @@ Singleton {
     }
 
     readonly property var fallbackPalette: ({
-        base00: "#2E3440", base01: "#3B4252", base03: "#4C566A", base05: "#E5E9F0",
-        base08: "#BF616A", base0A: "#EBCB8B", base0B: "#A3BE8C", base0C: "#88C0D0",
-    })
+            base00: "#2E3440",
+            base01: "#3B4252",
+            base03: "#4C566A",
+            base05: "#E5E9F0",
+            base08: "#BF616A",
+            base0A: "#EBCB8B",
+            base0B: "#A3BE8C",
+            base0C: "#88C0D0"
+        })
     readonly property var palette: {
         try {
             return JSON.parse(paletteFile.text()).palette ?? fallbackPalette;
