@@ -346,6 +346,11 @@ hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle only
+-- Lock without ever sleeping: hold an idle/sleep inhibitor for as long as hyprlock runs
+hl.bind(
+	mainMod .. " + CTRL + L",
+	hl.dsp.exec_cmd("pidof hyprlock || systemd-inhibit --what=idle:sleep --who=hyprlock --why='Screen locked' hyprlock")
+)
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
