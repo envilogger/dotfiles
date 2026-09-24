@@ -77,5 +77,10 @@ image=$(find_wallpaper) || {
 framed=$state/wallpaper-$(date +%s%N).png
 frame-wallpaper "$image" "$framed" >/dev/null
 ln -sfn "$(basename "$framed")" "$state/wallpaper.png"
+# Same image for the SDDM login screen; the installed copy is writable once
+# ~/.local/share/sddm-themes/hypr-glass/install.sh has been run.
+cp "$framed" "$HOME/.local/share/sddm-themes/hypr-glass/background.png"
+sddm_bg=/usr/share/sddm/themes/hypr-glass/background.png
+[[ -w $sddm_bg ]] && cp "$framed" "$sddm_bg"
 restart_hyprpaper
 find "$state" -maxdepth 1 -name 'wallpaper-*.png' ! -path "$framed" -delete
