@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Set up system-level config on a fresh machine: runs every install.sh tracked in the
+# dotfiles repo with sudo (keyd, sddm theme, ...). Each script is idempotent, so this
+# is safe to re-run after pulling changes.
+#
+# Usage: bootstrap [-n]    -n lists the scripts without running them
+set -euo pipefail
+
+dry_run=0
+case ${1:-} in
+    -n) dry_run=1 ;;
+    "") ;;
+    *) echo "Usage: ${0##*/} [-n]" >&2; exit 1 ;;
+esac
+
+mapfile -t scripts < <(git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" ls-files --full-name \
+    -- "$HOME/*/install.sh" | sed "s|^|$HOME/|")
+
+[[ ${#scripts[@]} -gt 0 ]] || { echo "No install.sh scripts tracked in ~/.dotfiles" >&2; exit 1; }
+
+for script in "${scripts[@]}"; do
+    echo "==> ${script/#$HOME/\~}"
+    (( dry_run )) || sudo "$script"
+done
