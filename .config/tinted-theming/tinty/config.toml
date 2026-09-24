@@ -17,3 +17,10 @@ hooks = [
     "$HOME/.config/gtk-3.0/tinty-hook.sh",
     "$HOME/.config/lazygit/tinty-hook.sh",
 ]
+
+# `tinty cycle` toggles between these (custom schemes in custom-schemes/base24/).
+default-cycle-ring = "one-dimmed"
+
+[[rings]]
+name = "one-dimmed"
+schemes = ["base24-one-light-dimmed", "base24-one-dark-dimmed"]

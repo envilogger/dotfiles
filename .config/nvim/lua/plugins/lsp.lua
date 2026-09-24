@@ -27,6 +27,7 @@ return {
   },
 
   -- C#
+  { "nvim-treesitter/nvim-treesitter", opts = { ensure_installed = { "c_sharp" } } },
   {
     "seblyng/roslyn.nvim",
     ft = { "cs", "razor" },
