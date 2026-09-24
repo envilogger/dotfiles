@@ -36,7 +36,9 @@ until they are added. Use `dot ls-files` to see what is tracked.
    tree at `$HOME`, they can wipe real files. If one of these seems necessary, explain why
    and let the user run it.
 4. **Two machines share this repo.** See "Machine-specific config" below.
-5. **Nothing secret, private or corporate goes into the repo.** See "Privacy" below.
+5. **Nothing secret, private or corporate goes into the repo.** Private and corporate
+   config belongs in `~/.private`, and secrets go in neither repo. See "Privacy" and
+   "Private repo" below.
 
 ## Machines
 
@@ -80,14 +82,30 @@ reviewing a diff, look for:
 - **Corporate details:** employer or client names, AWS account/profile names, cluster names,
   internal URLs, work repo paths, work-only tooling.
 
-If something like this is needed, keep it out of tracked files. Put it in an untracked local
-file that tracked config sources only if it exists (for example
-`[[ -f ~/.config/zsh/local.zsh ]] && source ~/.config/zsh/local.zsh`), or in the user's
-password manager (`op`). Explain what you did.
+Where such content goes:
+- **Secrets:** the user's password manager, read at runtime with `op`. They go in neither repo.
+- **Private or corporate config and scripts:** `~/.private` (see below).
 
-When you notice existing tracked content that breaks these rules, point it out, but don't
-move it unasked. Known example: the work AWS/EKS helper functions in `.config/zsh/aliases.zsh`.
-The user plans to split out corporate config separately.
+Tell the user what went where. When you notice existing tracked content that breaks these
+rules, point it out and offer to move it to `~/.private`, but don't move it unasked.
+
+Keep the public repo generic, including this skill: don't name employers, clients,
+accounts or private tools here. Describe them by kind instead ("work AWS helpers").
+
+## Private repo (`~/.private`)
+
+A separate, **normal** (not bare) private git repo with its own remote, cloned on both
+machines. It holds anything that must not be public: work helpers, internal names, private
+scripts. Read `~/.private/AGENTS.md` before changing it. In short:
+
+- `zsh/*.zsh` holds aliases and functions grouped by topic. `~/.zshrc` sources them after
+  `aliases.zsh`, so they can override public definitions.
+- `bin/` holds scripts and is on `PATH`.
+- It is optional. `~/.zshrc` skips it when the folder isn't there, so public config must
+  never depend on it.
+- The same hard rules apply there: never commit or push, new files get `git add -N`, and
+  no secrets. Use plain `git -C ~/.private …` for it, not `dot`.
+- When a change adds files to it, remind the user to pull it on the other machine.
 
 ## Repo conventions
 
@@ -100,6 +118,7 @@ The user plans to split out corporate config separately.
   - `.zshrc`: oh-my-zsh setup and machine detection. `ZSH_THEME=""`, and starship
     draws the prompt.
   - `$ZSH_CUSTOM` is `~/.config/zsh`: `aliases.zsh` holds aliases and shell functions.
+  - `~/.private/zsh/*.zsh` and `~/.private/bin` are loaded right after `aliases.zsh`.
   - Prompt: `.config/starship.toml`. Machine and SSH info reaches it through the
     `STARSHIP_*` environment variables that `.zshrc` exports.
 - **Match the style of the file you edit.** Keep comments short.

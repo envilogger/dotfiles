@@ -47,6 +47,12 @@ fi
 
 source "$ZSH"/oh-my-zsh.sh
 source "$ZSH_CUSTOM"/aliases.zsh
+
+# Private config and scripts (separate private repo), if cloned on this machine
+if [[ -d ~/.private ]]; then
+  for f in ~/.private/zsh/*.zsh(N); do source "$f"; done
+  path+=(~/.private/bin)
+fi
 # PROMPT="${MACHINE_COLOR}${MACHINE_LABEL}%f %F{cyan}%1~%f $ "
 
 # lazygit: tinty.yml (theme, written by ~/.config/lazygit/tinty-hook.sh) over config.yml
