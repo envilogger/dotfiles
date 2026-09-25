@@ -60,5 +60,8 @@ PanelWindow {
         Clock {
             Layout.alignment: Qt.AlignHCenter
         }
+        Session {
+            Layout.alignment: Qt.AlignHCenter
+        }
     }
 }
