@@ -1,0 +1,16 @@
+# GCC-only flags from embedded toolchains (ESP32/Xtensa, AVR, ARM) that clang rejects
+CompileFlags:
+  Remove:
+    - -mlongcalls
+    - -mtext-section-literals
+    - -fstrict-volatile-bitfields
+    - -fno-tree-switch-conversion
+    - -fno-shrink-wrap
+    - -mfix-esp32-psram-cache-issue
+    - -mfix-esp32-psram-cache-strategy=*
+    - -fipa-pta
+    - -mno-target-align
+    - -mdisable-hardware-atomics
+    - -specs=*
+Diagnostics:
+  UnusedIncludes: None
