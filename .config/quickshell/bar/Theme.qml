@@ -19,7 +19,9 @@ Singleton {
     // Tray apps drawn with a Tabler icon (matched like trayHidden) instead of
     // their own. Apps without one are shown at half colour, full colour on hover.
     readonly property var trayIcons: ({
-        // "teams-for-linux": "brand-teams",
+            "warp": "brand-cloudflare",
+            "teams-for-linux": "brand-teams",
+            "1password": "key"
         })
 
     readonly property string font: "FiraCode Nerd Font"
