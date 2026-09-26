@@ -45,6 +45,9 @@ PanelWindow {
         Tray {
             Layout.alignment: Qt.AlignHCenter
         }
+        AiUsage {
+            Layout.alignment: Qt.AlignHCenter
+        }
         Volume {
             Layout.alignment: Qt.AlignHCenter
         }
