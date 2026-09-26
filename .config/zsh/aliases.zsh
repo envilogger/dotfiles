@@ -4,6 +4,7 @@ DOTFILES_DIR="$HOME/.dotfiles"
 alias dot="git --git-dir=$DOTFILES_DIR --work-tree=$HOME"
 alias lazydot="lazygit --git-dir=$DOTFILES_DIR --work-tree=$HOME"
 alias open=xdg-open
+alias pp=projectizr
 
 # eza instead of ls (overrides oh-my-zsh's ls aliases)
 if command -v eza >/dev/null; then

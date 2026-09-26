@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Open a project in its own tmux session with three windows: agent (claude),
+# editor (nvim) and shell. Reuses the session if it already exists.
+#
+# Usage: projectizr [dir]
+#
+# Without a dir, pick one with fzf from the directories two levels below each root
+# in $PROJECTIZR_ROOTS (colon-separated, default ~/code), e.g. ~/code/rust/foo.
+# Works both inside tmux (switches client) and outside (attaches).
+set -euo pipefail
+
+usage() { echo "Usage: ${0##*/} [dir]" >&2; exit 1; }
+[[ $# -le 1 ]] || usage
+
+if [[ $# -eq 1 ]]; then
+    dir=$1
+else
+    IFS=: read -ra roots <<<"${PROJECTIZR_ROOTS:-$HOME/code}"
+    # Show paths with ~ for readability, expand back after picking.
+    dir=$(find "${roots[@]}" -mindepth 2 -maxdepth 2 -type d -not -name '.*' 2>/dev/null \
+        | sort | sed "s|^$HOME|~|" | fzf --prompt='project> ') || exit 0
+    dir=${dir/#\~/$HOME}
+fi
+
+[[ -d $dir ]] || { echo "Not a directory: $dir" >&2; exit 1; }
+dir=$(realpath "$dir")
+
+# tmux doesn't allow '.' or ':' in session names.
+name=$(basename "$dir" | tr '.:' '__')
+
+if ! tmux has-session -t "=$name" 2>/dev/null; then
+    tmux new-session -d -s "$name" -n agent -c "$dir"
+    tmux send-keys -t "=$name:agent" claude Enter
+    tmux new-window -d -t "=$name:" -n editor -c "$dir"
+    tmux send-keys -t "=$name:editor" nvim Enter
+    tmux new-window -d -t "=$name:" -n shell -c "$dir"
+fi
+
+if [[ -n ${TMUX:-} ]]; then
+    tmux switch-client -t "=$name"
+else
+    tmux attach-session -t "=$name"
+fi
