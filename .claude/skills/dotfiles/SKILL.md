@@ -123,6 +123,13 @@ scripts. Read `~/.private/AGENTS.md` before changing it. In short:
     `STARSHIP_*` environment variables that `.zshrc` exports.
 - **Match the style of the file you edit.** Keep comments short.
 
+## Commit messages
+
+Suggest them in Conventional Commits form, matching `dot log`: `<type>: <summary>`, with
+an optional topic prefix, for example `feat: tmux: persist sessions with resurrect`.
+Types: `feat`, `fix`, `refactor`, `chore`, `docs`, `style`, `perf`. Keep the summary
+lowercase and imperative, and leave out the trailing period.
+
 ## Workflow
 
 1. Read the files involved and check whether they're tracked (`dot ls-files <path>`).
@@ -136,4 +143,4 @@ scripts. Read `~/.private/AGENTS.md` before changing it. In short:
    - what changed, per file
    - `dot status --short`
    - anything to do on the other machine
-   - a suggested commit message, without committing
+   - a suggested commit message, without committing (see "Commit messages")
