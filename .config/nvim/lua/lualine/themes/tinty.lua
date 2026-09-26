@@ -8,7 +8,8 @@ local function mode(color)
   return {
     a = { fg = p.base00, bg = color, gui = "bold" },
     b = { fg = p.base05, bg = p.base02 },
-    c = { fg = p.base04, bg = p.base01 },
+    -- Editor background, so the rounded ends of a and z stand out
+    c = { fg = p.base04, bg = p.base00 },
   }
 end
 

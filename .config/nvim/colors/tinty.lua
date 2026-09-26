@@ -24,6 +24,8 @@ for i = 0, 15 do
   palette[key] = data.palette[key]
 end
 base16.setup({ palette = palette })
+-- Editor background behind lualine's rounded outer ends, which use StatusLine's bg.
+vim.api.nvim_set_hl(0, "StatusLine", { fg = palette.base04, bg = palette.base00 })
 vim.g.tinty_palette = palette -- read by lua/lualine/themes/tinty.lua
 vim.g.colors_name = "tinty"
 
