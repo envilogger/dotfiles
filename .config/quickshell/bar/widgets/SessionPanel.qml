@@ -2,9 +2,10 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Io
 import qs
 
-// Popup with session actions: lock, log out, reboot, shut down.
+// Popup with session actions: lock, log out, reboot, shut down, hibernate.
 PopupWindow {
     id: root
 
@@ -31,8 +32,28 @@ PopupWindow {
             icon: "power",
             crit: true,
             cmd: "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown -p 'systemctl poweroff' || systemctl poweroff"
+        },
+        {
+            // Lock first so the session resumes locked. Plain hyprlock: the Lock
+            // action's sleep inhibitor would block the hibernate.
+            label: "Hibernate",
+            icon: "zzz",
+            hibernate: true,
+            cmd: "pidof hyprlock || hyprlock & sleep 1; systemctl hibernate"
         }
     ]
+
+    // Hibernate is shown only where logind supports it (swap and resume set up).
+    property bool canHibernate: false
+
+    Process {
+        running: true
+        command: ["busctl", "call", "org.freedesktop.login1", "/org/freedesktop/login1",
+            "org.freedesktop.login1.Manager", "CanHibernate"]
+        stdout: StdioCollector {
+            onStreamFinished: root.canHibernate = text.trim() === 's "yes"'
+        }
+    }
 
     readonly property int margin: Theme.padding - 4
 
@@ -85,7 +106,7 @@ PopupWindow {
             spacing: 2
 
             Repeater {
-                model: root.actions
+                model: root.actions.filter(a => !a.hibernate || root.canHibernate)
 
                 Rectangle {
                     id: row
