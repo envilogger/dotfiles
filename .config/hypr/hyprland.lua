@@ -56,6 +56,8 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("quickshell -c bar")
 	hl.exec_cmd("hyprpaper")
 	hl.exec_cmd("systemctl start --user hyprpolkitagent")
+	-- Start the tmux server so tmux-continuum restores the last saved sessions
+	hl.exec_cmd("tmux has-session 2>/dev/null || tmux new-session -d")
 end)
 
 -------------------------------
