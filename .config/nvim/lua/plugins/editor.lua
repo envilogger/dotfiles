@@ -62,6 +62,13 @@ return {
         },
       },
       explorer = { replace_netrw = true },
+      -- Don't generate a lazygit theme from nvim highlights: lazygit keeps the tinty
+      -- theme from LG_CONFIG_FILE, like outside nvim (edit preset is in config.yml).
+      lazygit = { configure = false },
+      -- Editor background for the lazygit float, as in a standalone terminal
+      styles = {
+        lazygit = { wo = { winhighlight = "Normal:Normal,NormalNC:Normal" } },
+      },
       picker = {
         sources = {
           explorer = {

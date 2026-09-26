@@ -1,0 +1,6 @@
+# Theme: tinty.yml (see tinty-hook.sh), merged over this file via LG_CONFIG_FILE.
+gui:
+  nerdFontsVersion: "3"
+os:
+  # Inside nvim's terminal, open files in that nvim instead of a nested one.
+  editPreset: "nvim-remote"

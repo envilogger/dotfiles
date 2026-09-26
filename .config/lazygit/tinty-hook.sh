@@ -6,7 +6,7 @@
 # - Running lazygit instances pick the change up when their terminal regains focus
 #   (lazygit then reloads config files that changed).
 #
-# Inside Neovim, snacks.nvim appends its own theme (from the tinty colorscheme).
+# Inside Neovim, snacks.nvim is set not to add its own theme, so this one applies too.
 #
 # Must run after ~/.config/quickshell/tinty-hook.sh, which writes palette.json
 # (tinty runs hooks in the order listed in its config.toml).
