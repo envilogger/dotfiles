@@ -66,6 +66,9 @@ PanelWindow {
         Notifications {
             Layout.alignment: Qt.AlignHCenter
         }
+        KeyboardLayout {
+            Layout.alignment: Qt.AlignHCenter
+        }
         Clock {
             Layout.alignment: Qt.AlignHCenter
         }
