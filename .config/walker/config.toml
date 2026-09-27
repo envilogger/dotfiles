@@ -1,0 +1,7 @@
+# walker: https://github.com/abenz1267/walker
+# Only overrides; the rest comes from /etc/xdg/walker/config.toml.
+theme = "tinty" # ~/.config/walker/themes/tinty, colours from tinty-hook.sh
+
+[providers]
+# Installed elephant providers only (the default list also has websearch)
+default = ["desktopapplications", "calc"]

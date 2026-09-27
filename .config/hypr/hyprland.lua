@@ -35,7 +35,7 @@ hl.monitor({
 -- Set programs that you use
 local terminal = "ghostty"
 local fileManager = "nautilus"
-local menu = "hyprlauncher"
+local menu = "walker"
 
 -------------------
 ---- AUTOSTART ----
@@ -55,6 +55,8 @@ local menu = "hyprlauncher"
 hl.on("hyprland.start", function()
 	hl.exec_cmd("quickshell -c bar")
 	hl.exec_cmd("hyprpaper")
+	-- Keep walker resident so the menu bind opens it instantly (elephant runs as a systemd user service)
+	hl.exec_cmd("walker --gapplication-service")
 	hl.exec_cmd("systemctl start --user hyprpolkitagent")
 	-- Start the tmux server so tmux-continuum restores the last saved sessions
 	hl.exec_cmd("tmux has-session 2>/dev/null || tmux new-session -d")
