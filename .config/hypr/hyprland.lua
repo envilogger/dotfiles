@@ -463,6 +463,23 @@ hl.window_rule({
 	float = true,
 })
 
+hl.window_rule({
+	name = "float-mpv",
+	match = {
+		class = "^mpv$",
+	},
+	float = true,
+})
+
+hl.window_rule({
+	-- Screenshot editor opened by ~/.local/bin/screenshot
+	name = "float-satty",
+	match = {
+		class = "^com\\.gabm\\.satty$",
+	},
+	float = true,
+})
+
 -- Layer rules also return a handle.
 -- local overlayLayerRule = hl.layer_rule({
 --     name  = "no-anim-overlay",
