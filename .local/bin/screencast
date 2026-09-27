@@ -30,13 +30,13 @@ case $mode in
 esac
 
 mkdir -p "$dir"
-notify-send --app-name=screencast --transient --expire-time=2000 "Запись началась" "Повторное нажатие — стоп"
+notify-send --app-name=screencast --transient --expire-time=2000 "Recording started" "Press again to stop"
 wf-recorder "${args[@]}" -f "$file" >/dev/null 2>&1 || true
 
-[[ -s $file ]] || { notify-send --app-name=screencast --urgency=critical "Запись не удалась"; exit 1; }
+[[ -s $file ]] || { notify-send --app-name=screencast --urgency=critical "Recording failed"; exit 1; }
 
 action=$(notify-send --app-name=screencast --wait \
-    --action=default="Открыть папку" \
-    "Запись сохранена" "$file") || true
+    --action=default="Open folder" \
+    "Recording saved" "$file") || true
 [[ $action == default ]] && xdg-open "$dir" >/dev/null 2>&1 &
 exit 0

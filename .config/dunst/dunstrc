@@ -42,4 +42,4 @@
     # Actions: a click runs the notification's action, or opens this menu when it
     # has several (e.g. screenshot: edit / save)
     mouse_left_click = do_action, close_current
-    dmenu = walker --dmenu --placeholder Действие
+    dmenu = walker --dmenu --placeholder Action

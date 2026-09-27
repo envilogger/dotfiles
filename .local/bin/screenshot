@@ -30,8 +30,8 @@ esac
 wl-copy --type image/png <"$tmp"
 
 action=$(notify-send --app-name=screenshot --icon="$tmp" --wait \
-    --action=edit=Редактировать --action=save=Сохранить \
-    "Скриншот скопирован") || true
+    --action=edit=Edit --action=save=Save \
+    "Screenshot copied") || true
 
 case $action in
     edit)
@@ -41,6 +41,6 @@ case $action in
     save)
         mkdir -p "$dir"
         mv "$tmp" "$dir/$name"
-        notify-send --app-name=screenshot --icon="$dir/$name" "Скриншот сохранён" "$dir/$name"
+        notify-send --app-name=screenshot --icon="$dir/$name" "Screenshot saved" "$dir/$name"
         ;;
 esac
