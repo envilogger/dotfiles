@@ -10,7 +10,7 @@ A vertical Hyprland bar on the left edge, written in QML for Quickshell.
   HyprlandFocusGrab, Esc/click-outside to close) and are capped at
   `Theme.panelMaxHeight` of the screen.
 - **Notifications / OSD:** `NotificationService.qml` (singleton) is the notification
-  daemon, so dunst must not run (it is masked: `systemctl --user mask dunst`). New
+  daemon, so no other one (dunst, mako, …) may run. New
   notifications show in `NotificationPopups.qml`, all of them in the center
   (`widgets/Notifications.qml` + `NotificationsPanel.qml`), both drawn by
   `widgets/NotificationCard.qml`. `Osd.qml` follows Pipewire; brightness is shown via

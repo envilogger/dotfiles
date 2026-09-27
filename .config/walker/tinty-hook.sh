@@ -11,7 +11,8 @@ set -euo pipefail
 palette=${XDG_STATE_HOME:-$HOME/.local/state}/theme/palette.json
 colors=${XDG_CONFIG_HOME:-$HOME/.config}/walker/themes/tinty/colors.css
 
-# "#rrggbb" for a palette slot. Errors use base12 (bright red), see dunst's hook.
+# "#rrggbb" for a palette slot. Errors use base12 (bright red): some schemes' base08
+# isn't red, and palette.json fills base12 from base08 for base16 schemes.
 hex() { jq -r --arg key "$1" '.palette[$key]' "$palette"; }
 
 mkdir -p "$(dirname "$colors")"
