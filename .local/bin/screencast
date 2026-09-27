@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Toggle screen recording to ~/videos/screencasts.
+#
+# Usage: screencast [area|output]
+#   area    select a region with slurp (default)
+#   output  the focused monitor
+#
+# Running it again while recording stops the recording (the mode is ignored then).
+# When it stops, a notification offers to open the folder.
+set -euo pipefail
+
+mode=${1:-area}
+dir=$HOME/videos/screencasts
+file=$dir/screencast-$(date +%Y%m%d-%H%M%S).mp4
+
+# Second press: stop; the first instance notifies once wf-recorder exits.
+if pkill -INT -x wf-recorder; then
+    exit 0
+fi
+
+case $mode in
+    area)
+        geometry=$(slurp -d) || exit 0
+        args=(-g "$geometry")
+        ;;
+    output)
+        args=(-o "$(hyprctl monitors -j | jq -r '.[] | select(.focused).name')")
+        ;;
+    *) echo "Usage: ${0##*/} [area|output]" >&2; exit 1 ;;
+esac
+
+mkdir -p "$dir"
+notify-send --app-name=screencast --expire-time=2000 "Запись началась" "Повторное нажатие — стоп"
+wf-recorder "${args[@]}" -f "$file" >/dev/null 2>&1 || true
+
+[[ -s $file ]] || { notify-send --app-name=screencast --urgency=critical "Запись не удалась"; exit 1; }
+
+action=$(notify-send --app-name=screencast --wait \
+    --action=default="Открыть папку" \
+    "Запись сохранена" "$file") || true
+[[ $action == default ]] && xdg-open "$dir" >/dev/null 2>&1 &
+exit 0

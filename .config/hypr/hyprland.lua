@@ -356,6 +356,14 @@ hl.bind(
 	hl.dsp.exec_cmd("pidof hyprlock || systemd-inhibit --what=idle:sleep --who=hyprlock --why='Screen locked' hyprlock")
 )
 
+-- Screenshots go to the clipboard, screencasts to ~/videos/screencasts.
+-- Full paths: Hyprland's PATH (from the login session) has no ~/.local/bin.
+local bin = os.getenv("HOME") .. "/.local/bin/"
+hl.bind("Print", hl.dsp.exec_cmd(bin .. "screenshot area"))
+hl.bind("CTRL + Print", hl.dsp.exec_cmd(bin .. "screenshot output"))
+hl.bind("ALT + Print", hl.dsp.exec_cmd(bin .. "screencast area"))
+hl.bind("CTRL + ALT + Print", hl.dsp.exec_cmd(bin .. "screencast output"))
+
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))

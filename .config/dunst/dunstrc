@@ -38,3 +38,8 @@
     progress_bar_height = 8
     progress_bar_frame_width = 0
     progress_bar_corner_radius = 4
+
+    # Actions: a click runs the notification's action, or opens this menu when it
+    # has several (e.g. screenshot: edit / save)
+    mouse_left_click = do_action, close_current
+    dmenu = walker --dmenu --placeholder Действие

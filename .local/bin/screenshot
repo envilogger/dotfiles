@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Screenshot to the clipboard, then offer to edit or save it from a notification.
+#
+# Usage: screenshot [area|output]
+#   area    select a region with slurp (default)
+#   output  the focused monitor
+#
+# Clicking the notification opens dunst's action menu (walker): "Edit" opens satty,
+# "Save" moves the image to ~/pictures/screenshots. Otherwise it is dropped.
+set -euo pipefail
+
+mode=${1:-area}
+dir=$HOME/pictures/screenshots
+name=screenshot-$(date +%Y%m%d-%H%M%S).png
+tmp=$(mktemp --tmpdir="${XDG_RUNTIME_DIR:-/tmp}" screenshot-XXXXXX.png)
+trap 'rm -f "$tmp"' EXIT
+
+case $mode in
+    area)
+        # Esc in slurp cancels quietly
+        geometry=$(slurp -d) || exit 0
+        grim -g "$geometry" "$tmp"
+        ;;
+    output)
+        grim -o "$(hyprctl monitors -j | jq -r '.[] | select(.focused).name')" "$tmp"
+        ;;
+    *) echo "Usage: ${0##*/} [area|output]" >&2; exit 1 ;;
+esac
+
+wl-copy --type image/png <"$tmp"
+
+action=$(notify-send --app-name=screenshot --icon="$tmp" --wait \
+    --action=edit=Редактировать --action=save=Сохранить \
+    "Скриншот скопирован" "Клик — редактировать или сохранить") || true
+
+case $action in
+    edit)
+        mkdir -p "$dir"
+        satty --filename "$tmp" --output-filename "$dir/$name" --copy-command wl-copy
+        ;;
+    save)
+        mkdir -p "$dir"
+        mv "$tmp" "$dir/$name"
+        notify-send --app-name=screenshot --icon="$dir/$name" "Скриншот сохранён" "$dir/$name"
+        ;;
+esac
