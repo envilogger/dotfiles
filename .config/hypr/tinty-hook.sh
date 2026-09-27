@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # tinty hook: apply $XDG_STATE_HOME/theme/palette.json to the Hypr ecosystem.
 #
-# - Writes ~/.config/hypr/hyprtoolkit.conf (hyprlauncher and other hyprtoolkit apps
+# - Writes ~/.config/hypr/hyprtoolkit.conf (hyprtoolkit apps such as hyprshutdown
 #   watch it and recolour live).
 # - Reloads Hyprland so hyprland.lua re-reads the palette.
 # - Frames the scheme's wallpaper and sets it in hyprpaper.
@@ -29,9 +29,8 @@ accent_secondary = $(rgb base0C)
 EOF
 
 # hyprtoolkit <0.6 spins at 100% CPU forever once its watched config changes (fixed
-# upstream in e51fde5), so restart its apps instead of relying on the live reload.
-# hyprlauncher is started on demand by the menu bind; hyprpaper is restarted below.
-pkill -x hyprlauncher || true
+# upstream in e51fde5), so restart its apps instead of relying on the live reload:
+# hyprpaper is restarted below, hyprshutdown only runs briefly.
 
 # Fresh hyprpaper, detached from tinty; reads the wallpaper.png link via hyprpaper.conf.
 restart_hyprpaper() {

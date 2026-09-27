@@ -12,6 +12,6 @@ Icon {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: Quickshell.execDetached(["hyprlauncher"])
+        onClicked: Quickshell.execDetached(["walker"])
     }
 }
