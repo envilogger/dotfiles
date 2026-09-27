@@ -42,6 +42,9 @@ PanelWindow {
         }
         spacing: Theme.spacing
 
+        Recording {
+            Layout.alignment: Qt.AlignHCenter
+        }
         Tray {
             Layout.alignment: Qt.AlignHCenter
         }
