@@ -30,7 +30,7 @@ case $mode in
 esac
 
 mkdir -p "$dir"
-notify-send --app-name=screencast --expire-time=2000 "Запись началась" "Повторное нажатие — стоп"
+notify-send --app-name=screencast --transient --expire-time=2000 "Запись началась" "Повторное нажатие — стоп"
 wf-recorder "${args[@]}" -f "$file" >/dev/null 2>&1 || true
 
 [[ -s $file ]] || { notify-send --app-name=screencast --urgency=critical "Запись не удалась"; exit 1; }

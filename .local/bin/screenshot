@@ -5,8 +5,8 @@
 #   area    select a region with slurp (default)
 #   output  the focused monitor
 #
-# Clicking the notification opens dunst's action menu (walker): "Edit" opens satty,
-# "Save" moves the image to ~/pictures/screenshots. Otherwise it is dropped.
+# Its buttons: "Edit" opens satty, "Save" moves the image to ~/pictures/screenshots.
+# The notification stays in the notification center until used or dismissed.
 set -euo pipefail
 
 mode=${1:-area}
@@ -31,7 +31,7 @@ wl-copy --type image/png <"$tmp"
 
 action=$(notify-send --app-name=screenshot --icon="$tmp" --wait \
     --action=edit=Редактировать --action=save=Сохранить \
-    "Скриншот скопирован" "Клик — редактировать или сохранить") || true
+    "Скриншот скопирован") || true
 
 case $action in
     edit)

@@ -12,4 +12,8 @@ ShellRoot {
             screen: modelData
         }
     }
+
+    // Notification popups and the volume/brightness OSD follow the focused monitor.
+    NotificationPopups {}
+    Osd {}
 }

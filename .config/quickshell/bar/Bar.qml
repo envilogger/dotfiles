@@ -63,6 +63,9 @@ PanelWindow {
         Battery {
             Layout.alignment: Qt.AlignHCenter
         }
+        Notifications {
+            Layout.alignment: Qt.AlignHCenter
+        }
         Clock {
             Layout.alignment: Qt.AlignHCenter
         }

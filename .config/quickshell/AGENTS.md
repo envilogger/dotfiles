@@ -9,6 +9,13 @@ A vertical Hyprland bar on the left edge, written in QML for Quickshell.
   `X.qml` opens a popup `XPanel.qml`; panels share one pattern (PopupWindow +
   HyprlandFocusGrab, Esc/click-outside to close) and are capped at
   `Theme.panelMaxHeight` of the screen.
+- **Notifications / OSD:** `NotificationService.qml` (singleton) is the notification
+  daemon, so dunst must not run (it is masked: `systemctl --user mask dunst`). New
+  notifications show in `NotificationPopups.qml`, all of them in the center
+  (`widgets/Notifications.qml` + `NotificationsPanel.qml`), both drawn by
+  `widgets/NotificationCard.qml`. `Osd.qml` follows Pipewire; brightness is shown via
+  `qs ipc -c bar call osd brightness` from the Hyprland binds. Both windows are created
+  once in `shell.qml` and follow the focused monitor.
 - **Settings:** `bar/Theme.qml` (singleton) holds sizes, colours and user lists
   (`trayHidden`, `trayIcons`, `workspaceCount`, …). Use `Theme.*`, never literal colours.
 - **Icons:** Tabler, all loaded from `bar/tabler/*.json` by `Tabler.qml`. Use
