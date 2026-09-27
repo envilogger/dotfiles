@@ -24,6 +24,7 @@ return {
 
   {
     "anurag3301/nvim-platformio.lua",
+    main = "platformio",
     cmd = {
       "Pioinit",
       "PioLSP",
@@ -57,13 +58,11 @@ return {
       "nvim-treesitter/nvim-treesitter",
       "folke/snacks.nvim",
     },
-    init = function()
-      vim.g.pioConfig = {
-        lsp = "clangd",
-        clangd_source = "compiledb", -- `pio run -t compiledb`, no ccls needed
-        picker_backend = "snacks",
-      }
-    end,
+    opts = {
+      lsp = "clangd",
+      clangd_source = "compiledb", -- `pio run -t compiledb`, no ccls needed
+      picker_backend = "snacks",
+    },
   },
   { "akinsho/toggleterm.nvim", lazy = true, opts = {} },
 
