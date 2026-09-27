@@ -1,6 +1,10 @@
 ---
 name: dotfiles
 description: Change the user's personal configuration (zsh, starship, nvim, hyprland, quickshell, tmux, ghostty, lazygit, tinty themes, ~/.local/bin scripts, etc.) that is tracked in the bare dotfiles repo at ~/.dotfiles. Use whenever the user wants to add, change or remove config in their home directory.
+# Runs in a subagent so file reads and diffs stay out of the main conversation;
+# the caller waits for the report (see "Running as a subagent").
+context: fork
+background: false
 ---
 
 # Dotfiles
@@ -144,3 +148,18 @@ lowercase and imperative, and leave out the trailing period.
    - `dot status --short`
    - anything to do on the other machine
    - a suggested commit message, without committing (see "Commit messages")
+
+## Running as a subagent
+
+This skill runs in a forked subagent (`context: fork`). You cannot talk to the user; the
+main session relays your report, and its follow-ups arrive as new messages to you.
+
+- **Decisions go back, not guesses.** When a step needs the user's choice (machine-specific
+  config, privacy, anything ambiguous), stop before editing and return the question with
+  concrete options and your recommendation. Continue when the answer arrives.
+- **Don't disrupt the desktop.** Don't open windows or popups that take focus or keyboard
+  input (launchers, pickers, editors); the user is working. Checks that need their hands
+  go into the report as "to test".
+- **Report, don't narrate.** The main session sees only your final message: keep it to
+  the summary from "Workflow" step 6, plus what you verified and how, and what the user
+  still has to test or run (e.g. package installs that need sudo).
