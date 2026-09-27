@@ -1,4 +1,6 @@
 //@ pragma UseQApplication
+// Icon names (tray, notifications) resolve in the same theme as GTK apps
+//@ pragma IconTheme Adwaita
 import QtQuick
 import Quickshell
 
