@@ -5,3 +5,14 @@ theme = "tinty" # ~/.config/walker/themes/tinty, colours from tinty-hook.sh
 [providers]
 # Installed elephant providers only (the default list also has websearch)
 default = ["desktopapplications", "calc"]
+
+# Remmina connections: ~/.config/elephant/menus/remmina.lua
+[[providers.prefixes]]
+prefix = "rdp "
+provider = "menus:remmina"
+
+[providers.actions]
+"menus:remmina" = [
+  { action = "connect", default = true, bind = "Return" },
+  { action = "edit", bind = "ctrl e" },
+]
