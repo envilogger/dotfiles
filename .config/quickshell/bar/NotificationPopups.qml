@@ -26,8 +26,18 @@ PanelWindow {
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.namespace: "quickshell-notifications"
-    // Keyboard only after clicking into a reply field
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    // Hyprland gives a layer surface keyboard focus the moment it maps if the surface
+    // accepts any, so asking unconditionally made every notification take focus away
+    // from the window being worked in, and hand it back only once the popup expired.
+    // Ask for keyboard only while a reply field is actually in use.
+    WlrLayershell.keyboardFocus: replying ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+
+    readonly property bool replying: {
+        for (let i = 0; i < column.children.length; i++)
+            if (column.children[i].replyFocused)
+                return true;
+        return false;
+    }
 
     implicitWidth: 380
     implicitHeight: column.implicitHeight

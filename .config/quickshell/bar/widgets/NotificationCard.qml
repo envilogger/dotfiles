@@ -20,6 +20,10 @@ Rectangle {
     readonly property var defaultAction: actions.find(a => a.identifier === "default") ?? null
     readonly property var buttons: actions.filter(a => a.identifier !== "default")
     readonly property date arrived: NotificationService.arrivedAt[notification?.id] ?? new Date(NaN)
+    // True once the reply field has been clicked into. Deliberately `focus` and not
+    // `activeFocus`: the popup window only asks the compositor for keyboard because of
+    // this, so activeFocus cannot be true yet at the moment it flips.
+    readonly property bool replyFocused: reply.focus
 
     // Image hint first, then the app icon. Either may be a file path or an icon theme
     // name; Quickshell passes the image hint as image://icon/<path or name>.
@@ -213,7 +217,12 @@ Rectangle {
                 font.family: Theme.font
                 font.pixelSize: Theme.fontSize
                 clip: true
-                onAccepted: if (text.trim()) root.notification.sendInlineReply(text)
+                onAccepted: {
+                    if (text.trim())
+                        root.notification.sendInlineReply(text);
+                    // Hand the keyboard back to the window underneath.
+                    focus = false;
+                }
                 Keys.onEscapePressed: focus = false
 
                 Text {
