@@ -22,7 +22,8 @@ Singleton {
             "warp": "brand-cloudflare",
             "teams-for-linux": "brand-teams",
             "1password": "key",
-            "steam": "brand-steam"
+            "steam": "brand-steam",
+            "telegram": "brand-telegram"
         })
 
     readonly property string font: "FiraCode Nerd Font"
