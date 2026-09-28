@@ -4,8 +4,9 @@ import Quickshell
 import Quickshell.Hyprland
 import qs
 
-// Popup with plan limits and tokens per day for the last week, with a tab each for
-// Claude and ChatGPT (Codex). Data comes from AiUsageData.
+// Popup with plan limits and tokens per day for the last week, with a tab each for the
+// personal and work Claude Code profiles and for ChatGPT (Codex). Data comes from
+// AiUsageData.
 PopupWindow {
     id: root
 
@@ -46,7 +47,8 @@ PopupWindow {
         return percent >= 90 ? Theme.crit : percent >= 70 ? Theme.warn : Theme.accent;
     }
 
-    implicitWidth: 340
+    // Wide enough for the three tab labels to fit on one row.
+    implicitWidth: 360
     implicitHeight: Math.min(maxHeight, content.implicitHeight + 2 * margin)
     color: "transparent"
 
@@ -211,6 +213,7 @@ PopupWindow {
                         spacing: 3
 
                         TabButton { key: "claude"; icon: "sparkles"; title: "Claude" }
+                        TabButton { key: "claudeWork"; icon: "briefcase"; title: "Claude Work" }
                         TabButton { key: "chatgpt"; icon: "brand-openai"; title: "ChatGPT" }
                     }
                 }

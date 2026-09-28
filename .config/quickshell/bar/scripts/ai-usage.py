@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Token usage and plan limits for Claude and ChatGPT (Codex), as JSON for AiUsagePanel.
 
-Claude: limits from the OAuth usage endpoint (same as /usage in Claude Code, with the
-token Claude Code keeps in ~/.claude/.credentials.json); daily tokens from the
-transcripts in ~/.claude/projects.
+Claude: one section per Claude Code profile, i.e. per CLAUDE_CONFIG_DIR — personal in
+~/.claude, work in ~/.claude-work. Limits from the OAuth usage endpoint (same as /usage
+in Claude Code, with the token it keeps in <profile>/.credentials.json); daily tokens
+from the transcripts in <profile>/projects.
 ChatGPT: limits and daily tokens from the Codex session logs in ~/.codex/sessions.
 Limits there are as of the last Codex request.
 
@@ -42,8 +43,11 @@ def recent_files(root, pattern):
     return [p for p in root.rglob(pattern) if p.stat().st_mtime >= since]
 
 
-def claude_limits():
-    creds = json.loads((HOME / ".claude/.credentials.json").read_text())
+def claude_limits(config_dir):
+    creds_path = config_dir / ".credentials.json"
+    if not creds_path.is_file():
+        raise FileNotFoundError(f"no Claude Code login in {config_dir}")
+    creds = json.loads(creds_path.read_text())
     token = creds["claudeAiOauth"]["accessToken"]
     req = urllib.request.Request(
         "https://api.anthropic.com/api/oauth/usage",
@@ -63,10 +67,10 @@ def claude_limits():
     return limits
 
 
-def claude_days():
+def claude_days(config_dir):
     days = empty_days()
     seen = set()
-    for path in recent_files(HOME / ".claude/projects", "*.jsonl"):
+    for path in recent_files(config_dir / "projects", "*.jsonl"):
         with open(path, errors="replace") as f:
             for line in f:
                 if '"usage"' not in line:
@@ -155,6 +159,10 @@ def section(limits_fn, days_fn):
     return out
 
 
+def claude(config_dir):
+    return section(lambda: claude_limits(config_dir), lambda: claude_days(config_dir))
+
+
 try:
     codex_limits, codex_days = codex()
     chatgpt = {"limits": codex_limits, "days": day_list(codex_days), "error": None}
@@ -165,6 +173,7 @@ except Exception as e:
 
 print(json.dumps({
     "updated": now.isoformat(),
-    "claude": section(claude_limits, claude_days),
+    "claude": claude(HOME / ".claude"),
+    "claudeWork": claude(HOME / ".claude-work"),
     "chatgpt": chatgpt,
 }))

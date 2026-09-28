@@ -2,8 +2,8 @@ import QtQuick
 import Quickshell
 import qs
 
-// Dot when a plan limit runs low. Click: open AI usage panel (Claude and ChatGPT
-// limits, tokens per day).
+// Dot when a plan limit runs low. Click: open AI usage panel (Claude personal, Claude
+// work and ChatGPT limits, tokens per day).
 SvgIcon {
     id: root
 

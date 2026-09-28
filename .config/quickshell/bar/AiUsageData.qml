@@ -9,11 +9,14 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    // Output of ai-usage.py: { updated, claude: { limits, days, error }, chatgpt: … }
+    // Output of ai-usage.py: { updated, claude: { limits, days, error }, claudeWork: …,
+    // chatgpt: … }. One key per tab in AiUsagePanel; claude and claudeWork are the
+    // personal and work Claude Code profiles.
+    readonly property var providers: ["claude", "claudeWork", "chatgpt"]
     property var usage: null
     // Highest limit used across all providers, in percent.
     readonly property real maxPercent: {
-        const limits = [].concat(usage?.claude?.limits ?? [], usage?.chatgpt?.limits ?? []);
+        const limits = [].concat(...providers.map(k => usage?.[k]?.limits ?? []));
         return Math.max(0, ...limits.map(l => l.percent));
     }
 
@@ -29,7 +32,7 @@ Singleton {
                 try {
                     const next = JSON.parse(text);
                     // Keep the last known limits when fetching them fails (e.g. rate limited).
-                    for (const k of ["claude", "chatgpt"]) {
+                    for (const k of root.providers) {
                         const old = root.usage?.[k]?.limits ?? [];
                         if (next[k]?.error && !next[k].limits.length && old.length) {
                             next[k].limits = old;
