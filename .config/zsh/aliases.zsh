@@ -26,3 +26,10 @@ java21() {
   export JAVA_HOME=/usr/lib/jvm/java-17-openjdk/
   export PATH=$JAVA_HOME/bin:$PATH
 }
+
+# claude: the personal account is the default (~/.claude); the corporate one
+# lives in its own profile, so both can be open at the same time.
+# One-time sign-in: CLAUDE_CONFIG_DIR=~/.claude-work claude auth login [--sso]
+claude-work() {
+  CLAUDE_CONFIG_DIR="$HOME/.claude-work" command claude "$@"
+}
