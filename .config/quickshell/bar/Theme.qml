@@ -26,6 +26,10 @@ Singleton {
             "telegram": "brand-telegram"
         })
 
+    // Played once when a notification arrives, from the sound-theme-freedesktop
+    // package. Set to "" to make notifications silent again.
+    readonly property string notificationSound: "/usr/share/sounds/freedesktop/stereo/message.oga"
+
     readonly property string font: "FiraCode Nerd Font"
     // Propo variant: icon advance width matches the glyph, so icons centre correctly.
     readonly property string iconFont: "FiraCode Nerd Font Propo"

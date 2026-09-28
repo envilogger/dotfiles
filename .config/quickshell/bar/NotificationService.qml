@@ -35,6 +35,17 @@ Singleton {
         if (n?.transient) n.expire();
     }
 
+    // A short sound for an arriving notification. Detached rather than a managed
+    // Process so that several in a row overlap instead of queueing behind each other,
+    // and so a missing sound file simply costs nothing.
+    function chime(n) {
+        // Senders that make their own sound (music players, some messengers) ask for
+        // silence with this hint; Quickshell passes the raw hints through.
+        if (!Theme.notificationSound || n?.hints?.["suppress-sound"])
+            return;
+        Quickshell.execDetached(["paplay", Theme.notificationSound]);
+    }
+
     function clearAll() {
         for (const n of server.trackedNotifications.values.slice()) n.dismiss();
         popups = [];
@@ -57,6 +68,7 @@ Singleton {
             n.closed.connect(() => root.hidePopup(n));
             if (root.dnd && n.urgency !== NotificationUrgency.Critical) return;
             root.popups = [...root.popups.filter(p => p), n];
+            root.chime(n);
         }
     }
 
