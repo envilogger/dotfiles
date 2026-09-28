@@ -53,6 +53,8 @@ local menu = "walker"
 -- end)
 
 hl.on("hyprland.start", function()
+	-- Pull up graphical-session.target so user services wanted by it start with the session
+	hl.exec_cmd("systemctl start --user hyprland-session.target")
 	hl.exec_cmd("quickshell -c bar")
 	hl.exec_cmd("hyprpaper")
 	-- Keep walker resident so the menu bind opens it instantly (elephant runs as a systemd user service)
@@ -60,6 +62,10 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("systemctl start --user hyprpolkitagent")
 	-- Start the tmux server so tmux-continuum restores the last saved sessions
 	hl.exec_cmd("tmux has-session 2>/dev/null || tmux new-session -d")
+end)
+
+hl.on("hyprland.shutdown", function()
+	hl.exec_cmd("systemctl stop --user hyprland-session.target")
 end)
 
 -------------------------------
