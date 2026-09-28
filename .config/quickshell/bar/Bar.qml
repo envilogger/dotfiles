@@ -48,6 +48,9 @@ PanelWindow {
         Tray {
             Layout.alignment: Qt.AlignHCenter
         }
+        TickTick {
+            Layout.alignment: Qt.AlignHCenter
+        }
         AiUsage {
             Layout.alignment: Qt.AlignHCenter
         }
