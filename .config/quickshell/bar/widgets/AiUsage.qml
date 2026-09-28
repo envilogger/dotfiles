@@ -2,8 +2,8 @@ import QtQuick
 import Quickshell
 import qs
 
-// Dot when a plan limit runs low. Click: open AI usage panel (Claude personal, Claude
-// work and ChatGPT limits, tokens per day).
+// A dot per provider, lit when its plan limit runs low. Click: open AI usage panel
+// (Claude personal, Claude work and ChatGPT limits, tokens per day).
 SvgIcon {
     id: root
 
@@ -24,20 +24,32 @@ SvgIcon {
         panel.visible = true;
     }
 
-    // Notification dot once a limit passes 70% (yellow) or 90% (red).
-    Rectangle {
-        readonly property real percent: AiUsageData.maxPercent
-        visible: percent > 70
+    // One dot per provider, stacked down the right edge in the order of the panel's
+    // tabs: personal Claude, work Claude, ChatGPT. Nothing shows below 50%, then the
+    // dot appears green, turns yellow past 75% and red past 90%.
+    Column {
         anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.rightMargin: -2
-        anchors.topMargin: -2
-        width: 8
-        height: 8
-        radius: 4
-        color: percent > 90 ? Theme.crit : Theme.warn
-        border.color: Theme.bg
-        border.width: 1.5
+        anchors.rightMargin: -4
+        anchors.verticalCenter: parent.verticalCenter
+        spacing: 2
+
+        Repeater {
+            model: AiUsageData.providers
+
+            Rectangle {
+                required property string modelData
+                readonly property real percent: AiUsageData.percents[modelData] ?? 0
+                // Hidden rather than absent: the dots that are lit keep their place,
+                // so which provider a dot stands for never shifts.
+                opacity: percent > 50 ? 1 : 0
+                width: 6
+                height: 6
+                radius: 3
+                color: percent > 90 ? Theme.crit : percent > 75 ? Theme.warn : Theme.good
+                border.color: Theme.bg
+                border.width: 1
+            }
+        }
     }
 
     MouseArea {

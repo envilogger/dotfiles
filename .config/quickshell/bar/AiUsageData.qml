@@ -14,10 +14,12 @@ Singleton {
     // personal and work Claude Code profiles.
     readonly property var providers: ["claude", "claudeWork", "chatgpt"]
     property var usage: null
-    // Highest limit used across all providers, in percent.
-    readonly property real maxPercent: {
-        const limits = [].concat(...providers.map(k => usage?.[k]?.limits ?? []));
-        return Math.max(0, ...limits.map(l => l.percent));
+    // Highest limit used per provider, in percent: { claude: 19, claudeWork: 10, … }.
+    readonly property var percents: {
+        const out = {};
+        for (const k of providers)
+            out[k] = Math.max(0, ...(usage?.[k]?.limits ?? []).map(l => l.percent));
+        return out;
     }
 
     function refresh() {
