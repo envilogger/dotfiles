@@ -21,7 +21,8 @@ Singleton {
     readonly property var trayIcons: ({
             "warp": "brand-cloudflare",
             "teams-for-linux": "brand-teams",
-            "1password": "key"
+            "1password": "key",
+            "steam": "brand-steam"
         })
 
     readonly property string font: "FiraCode Nerd Font"
