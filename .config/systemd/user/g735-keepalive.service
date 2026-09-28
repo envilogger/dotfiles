@@ -1,0 +1,17 @@
+[Unit]
+Description=Keep the Logitech G735 adapter awake after playback
+Documentation=file:%h/.local/bin/g735-keepalive
+After=pipewire.service pipewire-pulse.service
+Wants=pipewire.service pipewire-pulse.service
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/g735-keepalive
+# Hold time, poll interval, noise level and detection threshold: see the script header.
+#Environment=G735_HOLD=3600
+#Environment=G735_LEVEL=-60
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
