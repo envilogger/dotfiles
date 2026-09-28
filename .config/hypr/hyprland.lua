@@ -77,6 +77,10 @@ end)
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 
+-- Run Chromium/Electron apps natively on Wayland instead of XWayland, so screen
+-- sharing goes through xdg-desktop-portal instead of an empty XWayland root window
+hl.env("OZONE_PLATFORM", "wayland")
+
 -----------------------
 ----- PERMISSIONS -----
 -----------------------
