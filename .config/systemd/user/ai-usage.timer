@@ -1,0 +1,14 @@
+[Unit]
+Description=Refresh the AI plan limits for the Quickshell bar every 90s
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Timer]
+# Right after login, then every 90s: often enough for the bar, rare enough that the
+# usage endpoint doesn't rate-limit us.
+OnActiveSec=5s
+OnUnitActiveSec=90s
+AccuracySec=5s
+
+[Install]
+WantedBy=graphical-session.target

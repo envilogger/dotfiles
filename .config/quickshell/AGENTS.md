@@ -28,8 +28,15 @@ A vertical Hyprland bar on the left edge, written in QML for Quickshell.
   intentional, so tinty doesn't recolour the terminal). `~/.local/bin/frame-wallpaper`
   uses the same palette's `base00`.
 - **System data** not exposed by Quickshell comes from `nmcli` (IP, DNS) and `busctl`
-  (UPower history and details, BlueZ signal strength). AI usage comes from
-  `bar/scripts/ai-usage.py` (prints JSON; run it directly to debug).
+  (UPower history and details, BlueZ signal strength).
+- **AI usage:** `bar/scripts/ai-usage.py --write` refreshes
+  `~/.local/state/quickshell/ai-usage.json` every 90 s, run by the `ai-usage.timer`
+  systemd user unit (`~/.config/systemd/user/`, started by `graphical-session.target`).
+  `AiUsageData.qml` only reads that file, live: the bar never calls the usage endpoint,
+  which rate-limits to one call per ~27 s per account. Refresh now with
+  `systemctl --user start ai-usage`, debug with `journalctl --user -u ai-usage -e` or by
+  running the script with no arguments (prints the same JSON; doing that while the timer
+  is enabled is what trips the 429).
 - **Hyprland uses a Lua config:** dispatches are Lua, e.g.
   `Hyprland.dispatch("hl.dsp.focus({ workspace = 3 })")`.
 - **Testing without a screenshot tool:** add a temporary `IpcHandler` and call it with

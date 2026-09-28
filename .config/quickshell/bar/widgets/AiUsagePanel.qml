@@ -52,15 +52,6 @@ PopupWindow {
     implicitHeight: Math.min(maxHeight, content.implicitHeight + 2 * margin)
     color: "transparent"
 
-    // Refresh more often while open than the background refresh does.
-    Timer {
-        running: root.visible
-        interval: 60000
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: AiUsageData.refresh()
-    }
-
     // Close when clicking outside the panel. The grab is activated shortly after the
     // popup is shown: activating it before the popup surface is mapped leaves the popup
     // out of the grab, so the first click inside it would dismiss the panel.
@@ -220,7 +211,9 @@ PopupWindow {
 
                 Text {
                     visible: root.usage === null
-                    text: "Loading…"
+                    Layout.fillWidth: true
+                    wrapMode: Text.Wrap
+                    text: AiUsageData.error || "Loading…"
                     color: Theme.muted
                     font.family: Theme.font
                     font.pixelSize: Theme.fontSize

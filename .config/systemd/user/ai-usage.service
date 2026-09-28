@@ -1,0 +1,11 @@
+[Unit]
+Description=AI plan limits for the Quickshell bar
+Documentation=file:%h/.config/quickshell/AGENTS.md
+
+[Service]
+Type=oneshot
+# Writes ~/.local/state/quickshell/ai-usage.json, which the bar reads. Started by
+# ai-usage.timer; run it by hand (systemctl --user start ai-usage) to refresh now.
+ExecStart=%h/.config/quickshell/bar/scripts/ai-usage.py --write
+# The usage endpoint may make us wait out a 429 per Claude profile before answering.
+TimeoutStartSec=90

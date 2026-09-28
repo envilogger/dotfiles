@@ -10,14 +10,25 @@ Limits there are as of the last Codex request.
 
 Daily tokens count everything billed per request: input, output, cache writes and reads.
 Days are local, oldest first, today last.
+
+Prints the JSON on stdout; with --write it goes to $XDG_STATE_HOME/quickshell/ai-usage.json
+instead, which is what the ai-usage.timer systemd user unit does every 90 s and all the
+bar reads. Only this script may poll the usage endpoint: it rate-limits hard (HTTP 429),
+so running it by hand while the service runs is enough to trip it.
 """
 import datetime as dt
 import json
 import os
+import sys
+import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
 HOME = Path.home()
+CLAUDE_PROFILES = {"claude": HOME / ".claude", "claudeWork": HOME / ".claude-work"}
+STATE = Path(os.environ.get("XDG_STATE_HOME") or HOME / ".local/state") / "quickshell"
+CACHE = STATE / "ai-usage.json"
 DAYS = 7
 now = dt.datetime.now().astimezone()
 first_day = now.date() - dt.timedelta(days=DAYS - 1)
@@ -43,6 +54,26 @@ def recent_files(root, pattern):
     return [p for p in root.rglob(pattern) if p.stat().st_mtime >= since]
 
 
+def get_json(req):
+    """GET some JSON, waiting out one 429: the usage endpoint rate-limits for ~27 s."""
+    for attempt in (0, 1):
+        try:
+            with urllib.request.urlopen(req, timeout=10) as r:
+                return json.load(r)
+        except urllib.error.HTTPError as e:
+            if e.code != 429 or attempt:
+                raise
+            retry_after = e.headers.get("retry-after")
+            print(f"429 from {req.full_url}, retry-after: {retry_after}", file=sys.stderr)
+            try:
+                wait = int(retry_after)
+            except (TypeError, ValueError):
+                wait = 0
+            # It answers 429 with retry-after 0 as well, so never wait less than the
+            # window it actually enforces.
+            time.sleep(min(max(wait, 28), 40))
+
+
 def claude_limits(config_dir):
     creds_path = config_dir / ".credentials.json"
     if not creds_path.is_file():
@@ -53,8 +84,7 @@ def claude_limits(config_dir):
         "https://api.anthropic.com/api/oauth/usage",
         headers={"Authorization": f"Bearer {token}", "anthropic-beta": "oauth-2025-04-20"},
     )
-    with urllib.request.urlopen(req, timeout=10) as r:
-        data = json.load(r)
+    data = get_json(req)
     limits = []
     for l in data.get("limits") or []:
         model = ((l.get("scope") or {}).get("model") or {}).get("display_name")
@@ -159,21 +189,74 @@ def section(limits_fn, days_fn):
     return out
 
 
-def claude(config_dir):
-    return section(lambda: claude_limits(config_dir), lambda: claude_days(config_dir))
+def claude(config_dir, prev_limits=None):
+    """One Claude profile. With prev_limits the usage endpoint is left alone and those
+    limits are reused: it isn't this profile's turn."""
+    limits_fn = (lambda: prev_limits) if prev_limits is not None else (
+        lambda: claude_limits(config_dir))
+    return section(limits_fn, lambda: claude_days(config_dir))
 
 
-try:
-    codex_limits, codex_days = codex()
-    chatgpt = {"limits": codex_limits, "days": day_list(codex_days), "error": None}
-    if not (HOME / ".codex/sessions").is_dir():
-        chatgpt["error"] = "No Codex sessions yet"
-except Exception as e:
-    chatgpt = {"limits": [], "days": day_list(empty_days()), "error": f"Codex logs unreadable: {e}"}
+def collect(fetch=None, prev=None):
+    """All of it. fetch names the Claude profiles to ask the usage endpoint about; by
+    default every one of them, and the rest reuse their limits from prev."""
+    try:
+        codex_limits, codex_days = codex()
+        chatgpt = {"limits": codex_limits, "days": day_list(codex_days), "error": None}
+        if not (HOME / ".codex/sessions").is_dir():
+            chatgpt["error"] = "No Codex sessions yet"
+    except Exception as e:
+        chatgpt = {"limits": [], "days": day_list(empty_days()),
+                   "error": f"Codex logs unreadable: {e}"}
 
-print(json.dumps({
-    "updated": now.isoformat(),
-    "claude": claude(HOME / ".claude"),
-    "claudeWork": claude(HOME / ".claude-work"),
-    "chatgpt": chatgpt,
-}))
+    data = {"updated": now.isoformat()}
+    for key, config_dir in CLAUDE_PROFILES.items():
+        reuse = None if fetch is None or key in fetch else (
+            ((prev or {}).get(key) or {}).get("limits") or [])
+        data[key] = claude(config_dir, reuse)
+    data["chatgpt"] = chatgpt
+    return data
+
+
+def keep_last_known(data, prev):
+    """Carry over the limits of the previous run when this one couldn't fetch them."""
+    for key, section_ in data.items():
+        if not isinstance(section_, dict):
+            continue
+        old = ((prev.get(key) or {}) if isinstance(prev, dict) else {}).get("limits") or []
+        if section_.get("error") and not section_["limits"] and old:
+            section_["limits"] = old
+            section_["error"] += " (showing last known)"
+
+
+def write_cache():
+    try:
+        prev = json.loads(CACHE.read_text())
+    except (OSError, ValueError):
+        prev = {}
+    # One profile per run: the endpoint allows about one call per 27 s per account (and
+    # every running Claude Code session polls it too), so asking about both profiles in
+    # the same run gets the second one a 429. Limits per profile are thus 3 min old at
+    # worst; the daily token stats come from local files and are refreshed every run.
+    order = list(CLAUDE_PROFILES)
+    if prev:
+        last = prev.get("limitsFetched")
+        turn = order[(order.index(last) + 1) % len(order)] if last in order else order[0]
+        fetch = {turn}
+    else:
+        # Nothing cached yet: fill every profile, even at the risk of a 429 on the second.
+        turn, fetch = order[-1], set(order)
+    data = collect(fetch, prev)
+    data["limitsFetched"] = turn
+    keep_last_known(data, prev)
+    STATE.mkdir(parents=True, exist_ok=True)
+    # Written aside and renamed, so the bar never reads a half-written file.
+    tmp = CACHE.with_name(CACHE.name + ".new")
+    tmp.write_text(json.dumps(data))
+    os.replace(tmp, CACHE)
+
+
+if "--write" in sys.argv[1:]:
+    write_cache()
+else:
+    print(json.dumps(collect()))
