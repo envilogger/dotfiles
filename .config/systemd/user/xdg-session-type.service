@@ -1,0 +1,22 @@
+[Unit]
+# systemd --user inherits nothing from the Hyprland session, so units started by
+# graphical-session.target (elephant, and the apps it launches) never see
+# XDG_SESSION_TYPE. Chrome's WebRTC only treats the session as Wayland when both
+# XDG_SESSION_TYPE=wayland and WAYLAND_DISPLAY are set; without the first it
+# captures through XWayland, which makes screen sharing a black screen and never
+# reaches xdg-desktop-portal.
+# environment.d does not work here: ~/.zprofile runs its generator for every login
+# shell, so a bare TTY login would get XDG_SESSION_TYPE=wayland instead of tty.
+Description=Export XDG_SESSION_TYPE=wayland to the systemd user session
+Documentation=man:dbus-update-activation-environment(1)
+PartOf=graphical-session-pre.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# One call covers both the systemd user manager and the D-Bus activation environment.
+ExecStart=/usr/bin/dbus-update-activation-environment --systemd XDG_SESSION_TYPE=wayland
+ExecStop=/usr/bin/systemctl --user unset-environment XDG_SESSION_TYPE
+
+[Install]
+WantedBy=graphical-session-pre.target
