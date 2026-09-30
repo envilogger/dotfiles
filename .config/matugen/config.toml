@@ -1,0 +1,35 @@
+# matugen: https://github.com/InioX/matugen
+#
+# Turns a wallpaper into a tinty scheme. One run writes both variants into tinty's
+# custom-schemes/, so `theme-from-wallpaper` can apply either without re-running.
+#
+# The wallpaper only supplies the hue: the tonal palette pins every slot's lightness,
+# which keeps accent contrast even across hues (see the templates).
+
+[config]
+version_check = false
+reload_apps = false
+# Always take the most dominant colour, so matugen never opens its interactive picker.
+source_color_index = 0
+
+# base16 accent slots. Material re-tones each one against the wallpaper's surface, so the
+# hues stay far enough apart to tell red from orange and cyan from blue after blending.
+# blend = true shifts each hue up to 15 degrees towards the wallpaper; set it to false to
+# keep these hues exactly and let only the greys follow the wallpaper.
+[config.custom_colors]
+red     = { color = "#c62828", blend = true }  # base08
+orange  = { color = "#cc6d00", blend = true }  # base09
+yellow  = { color = "#b8a000", blend = true }  # base0A
+green   = { color = "#2e8b2e", blend = true }  # base0B
+cyan    = { color = "#008b8b", blend = true }  # base0C
+blue    = { color = "#2244cc", blend = true }  # base0D
+magenta = { color = "#9c27b0", blend = true }  # base0E
+brown   = { color = "#8b5a2b", blend = true }  # base0F
+
+[templates.tinty-light]
+input_path = '~/.config/matugen/templates/tinty-base24-light.yaml'
+output_path = '~/.local/share/tinted-theming/tinty/custom-schemes/base24/wallpaper-light.yaml'
+
+[templates.tinty-dark]
+input_path = '~/.config/matugen/templates/tinty-base24-dark.yaml'
+output_path = '~/.local/share/tinted-theming/tinty/custom-schemes/base24/wallpaper-dark.yaml'

@@ -24,3 +24,8 @@ default-cycle-ring = "one-dimmed"
 [[rings]]
 name = "one-dimmed"
 schemes = ["base24-one-light-dimmed", "base24-one-dark-dimmed"]
+
+# Wallpaper-derived schemes, written by `theme-from-wallpaper` (matugen).
+[[rings]]
+name = "wallpaper"
+schemes = ["base24-wallpaper-light", "base24-wallpaper-dark"]

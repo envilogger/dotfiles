@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Build a tinty scheme from a wallpaper with matugen, then apply it.
+#
+# Usage: theme-from-wallpaper <image> [light|dark]
+#
+# One matugen run writes both variants into tinty's custom-schemes/base24 (see
+# ~/.config/matugen/config.toml and the templates next to it). The image is linked into
+# ~/pictures/wallpapers under the scheme's own name, so ~/.config/hypr/tinty-hook.sh
+# picks it up the way it does for every other scheme. Without a variant, the one
+# currently applied is reused.
+set -euo pipefail
+
+usage() { echo "Usage: ${0##*/} <image> [light|dark]" >&2; exit 1; }
+[[ $# -ge 1 && $# -le 2 && -f $1 ]] || usage
+
+image=$(realpath "$1")
+palette=${XDG_STATE_HOME:-$HOME/.local/state}/theme/palette.json
+wallpapers=$HOME/pictures/wallpapers
+
+variant=${2:-$(jq -r '.variant // "light"' "$palette" 2>/dev/null || echo light)}
+[[ $variant == light || $variant == dark ]] || usage
+
+# Material tones sit at ~5.3:1 against the generated background; -0.6 brings the accents
+# to ~4.1:1 (light) and ~4.4:1 (dark), matching the one-*-dimmed schemes.
+contrast=-0.6
+
+matugen image "$image" --contrast "$contrast" --quiet
+
+# Same name as the scheme, so the hypr hook's lookup finds it. Drop stale extensions
+# first: the hook takes the first match and would otherwise keep the old image.
+mkdir -p "$wallpapers"
+for v in light dark; do
+    rm -f "$wallpapers/wallpaper-$v".{png,jpg,jpeg,webp,jxl}
+    ln -sfn "$image" "$wallpapers/wallpaper-$v.${image##*.}"
+done
+
+tinty apply "base24-wallpaper-$variant"

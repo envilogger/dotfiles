@@ -23,3 +23,11 @@ several schemes.
 colour. The result goes to `~/.local/state/theme/wallpaper-<id>.png`, which
 `~/.local/state/theme/wallpaper.png` links to. hyprpaper switches to it right away and
 loads that link at login. New images appear on the next `tinty apply`.
+
+## Themes generated from an image
+
+`theme-from-wallpaper <image> [light|dark]` builds a scheme from the image with matugen
+(see `~/.config/matugen/config.toml`) and applies it. It links the image here as
+`wallpaper-light.*` and `wallpaper-dark.*`, so the lookup above finds it for the
+`base24-wallpaper-light` / `base24-wallpaper-dark` schemes it writes. `tinty cycle
+--ring wallpaper` toggles the two.
