@@ -34,6 +34,8 @@ hl.monitor({
 
 -- Set programs that you use
 local terminal = "ghostty"
+local dropTermClass = "com.mitchellh.ghostty-drop"
+local dropTermWorkspace = "dropterm"
 local fileManager = "nautilus"
 local menu = "walker"
 
@@ -345,6 +347,15 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
+-- Dropdown terminal: one ghostty living on its own special workspace, shown/hidden by the bind
+hl.bind(mainMod .. " + grave", function()
+	if #hl.get_windows({ class = dropTermClass }) == 0 then
+		-- first press: the "drop-term" rule puts it on the special workspace and shows it
+		hl.exec_cmd(terminal .. " --class=" .. dropTermClass)
+	else
+		hl.dispatch(hl.dsp.workspace.toggle_special(dropTermWorkspace))
+	end
+end)
 local closeWindowBind = hl.bind(mainMod .. " + W", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
 hl.bind(
@@ -465,6 +476,19 @@ hl.window_rule({
 		class = "com.onepassword.OnePassword",
 	},
 	float = true,
+})
+
+hl.window_rule({
+	-- Dropdown terminal from mainMod + grave: own special workspace, centred, half the monitor
+	name = "drop-term",
+	match = {
+		class = "^com\\.mitchellh\\.ghostty-drop$",
+	},
+	workspace = "special:" .. dropTermWorkspace,
+	float = true,
+	-- percentages aren't parsed here, so halve the monitor with the rule math vars
+	size = "monitor_w/2 monitor_h/2",
+	center = true,
 })
 
 hl.window_rule({
