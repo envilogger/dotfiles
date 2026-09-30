@@ -4,11 +4,14 @@ import Quickshell.Bluetooth
 import qs
 
 // One Bluetooth device. Click: disconnect if connected, otherwise connect (pairing
-// first if needed). Paired devices show a star, and a trash button on hover to forget them.
+// first if needed). Paired devices get a trash button on hover to forget them; ones out
+// of range are dimmed.
 Rectangle {
     id: root
 
     required property BluetoothDevice device
+    // Heard during the current scan. Paired devices that are away stay listed, dimmed.
+    property bool inRange: true
 
     readonly property bool busy: device.pairing
         || device.state === BluetoothDeviceState.Connecting
@@ -80,7 +83,9 @@ Rectangle {
         SvgIcon {
             name: root.iconName
             size: Theme.fontSize + 4
-            color: root.device.connected ? Theme.accent : Theme.fg
+            color: root.device.connected ? Theme.accent
+                : root.inRange ? Theme.fg
+                : Theme.muted
             Layout.preferredWidth: 20
         }
 
@@ -88,7 +93,8 @@ Rectangle {
             Layout.fillWidth: true
             text: root.device.name || root.device.address
             elide: Text.ElideRight
-            color: root.device.connected || root.device.paired ? Theme.fg : Theme.muted
+            color: root.device.connected || root.device.paired && root.inRange
+                ? Theme.fg : Theme.muted
             font.family: Theme.font
             font.pixelSize: Theme.fontSize
             font.bold: root.device.connected
@@ -127,14 +133,6 @@ Rectangle {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: root.device.forget()
             }
-        }
-
-        // Paired
-        SvgIcon {
-            visible: root.device.paired && !root.device.connected
-            name: "star"
-            size: Theme.fontSize + 2
-            color: Theme.muted
         }
     }
 }

@@ -6,8 +6,8 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import qs
 
-// Popup with the adapter's power switch, connected devices, and devices available to
-// connect (paired ones first). Scans for devices while open.
+// Popup with the adapter's power switch, connected devices, every paired device, and
+// unpaired devices in range. Scans for devices while open.
 PopupWindow {
     id: root
 
@@ -20,14 +20,19 @@ PopupWindow {
 
     readonly property var connected: devices.filter(d => d.connected)
         .sort((a, b) => a.name.localeCompare(b.name))
-    // Devices heard during the current scan, i.e. in range. Paired devices stay known to
-    // BlueZ when they're away, so only list those that are nearby. Devices without a
-    // name (just an address) are mostly beacons you can't connect to; hide them.
-    // Paired first, then by name.
+    // Devices heard during the current scan, i.e. in range.
     property var nearby: new Set()
+    // Paired devices stay known to BlueZ when they're away, so list them all; the ones
+    // out of range sort last and their row is dimmed.
+    readonly property var paired: devices
+        .filter(d => !d.connected && d.paired)
+        .sort((a, b) => (nearby.has(b.address) - nearby.has(a.address))
+            || a.name.localeCompare(b.name))
+    // Unpaired devices in range. Ones without a name (just an address) are mostly
+    // beacons you can't connect to; hide them.
     readonly property var available: devices
-        .filter(d => !d.connected && nearby.has(d.address) && (d.paired || d.deviceName !== ""))
-        .sort((a, b) => (b.paired - a.paired) || a.name.localeCompare(b.name))
+        .filter(d => !d.connected && !d.paired && nearby.has(d.address) && d.deviceName !== "")
+        .sort((a, b) => a.name.localeCompare(b.name))
 
     // Quickshell doesn't expose signal strength; BlueZ sets RSSI only on devices it
     // currently hears, so read it from BlueZ's object tree.
@@ -273,7 +278,30 @@ PopupWindow {
 
                 Separator {}
 
-                // Available devices
+                // Paired devices, whether or not they're in range
+                Header { icon: "star"; title: "Paired" }
+                Placeholder {
+                    visible: root.paired.length === 0
+                    text: !root.powered ? "Bluetooth is off" : "No paired devices"
+                }
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 2
+
+                    Repeater {
+                        model: ScriptModel { values: root.paired }
+                        BluetoothRow {
+                            required property var modelData
+                            Layout.fillWidth: true
+                            device: modelData
+                            inRange: root.nearby.has(modelData.address)
+                        }
+                    }
+                }
+
+                Separator {}
+
+                // Unpaired devices in range
                 Header { icon: "bluetooth"; title: "Available" }
                 Placeholder {
                     visible: root.available.length === 0
