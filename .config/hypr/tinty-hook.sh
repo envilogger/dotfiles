@@ -34,44 +34,53 @@ EOF
 
 # Fresh hyprpaper, detached from tinty; reads the wallpaper.png link via hyprpaper.conf.
 restart_hyprpaper() {
-    pkill -x hyprpaper || true
-    for _ in {1..40}; do pgrep -x hyprpaper >/dev/null || break; sleep 0.05; done
-    setsid -f hyprpaper >/dev/null 2>&1
+  pkill -x hyprpaper || true
+  for _ in {1..40}; do
+    pgrep -x hyprpaper >/dev/null || break
+    sleep 0.05
+  done
+  setsid -f hyprpaper >/dev/null 2>&1
 }
 
 # Nothing more to do outside a Hyprland session (e.g. tinty run over ssh).
 [[ -n ${HYPRLAND_INSTANCE_SIGNATURE:-} ]] || exit 0
 hyprctl reload >/dev/null
 
-# Wallpaper: the scheme's image from ~/pictures/wallpapers (see the README there), framed
+# Wallpaper: the scheme's image from ~/Pictures/wallpapers (see the README there), framed
 # in base00 by frame-wallpaper, linked as $state/wallpaper.png for hyprpaper.conf and
 # shown by restarting hyprpaper. Each framed image gets its own name, so hyprpaper never
 # shows a cached one.
-wallpapers=$HOME/pictures/wallpapers
+wallpapers=$HOME/Pictures/wallpapers
 state=$(dirname "$palette")
 
 # Most specific name first: base16-gruvbox-dark-hard tries gruvbox-dark-hard,
 # gruvbox-dark, gruvbox, then default-<variant>.
 find_wallpaper() {
-    local name file
-    name=$(jq -r '.theme | sub("^base(16|24)-"; "")' "$palette")
-    while :; do
-        for file in "$wallpapers/$name".{png,jpg,jpeg,webp,jxl}; do
-            [[ -f $file ]] && { echo "$file"; return; }
-        done
-        [[ $name == *-* ]] || break
-        name=${name%-*}
+  local name file
+  name=$(jq -r '.theme | sub("^base(16|24)-"; "")' "$palette")
+  while :; do
+    for file in "$wallpapers/$name".{png,jpg,jpeg,webp,jxl}; do
+      [[ -f $file ]] && {
+        echo "$file"
+        return
+      }
     done
-    for file in "$wallpapers/default-$(jq -r '.variant // "dark"' "$palette")".{png,jpg,jpeg,webp,jxl}; do
-        [[ -f $file ]] && { echo "$file"; return; }
-    done
-    return 1
+    [[ $name == *-* ]] || break
+    name=${name%-*}
+  done
+  for file in "$wallpapers/default-$(jq -r '.variant // "dark"' "$palette")".{png,jpg,jpeg,webp,jxl}; do
+    [[ -f $file ]] && {
+      echo "$file"
+      return
+    }
+  done
+  return 1
 }
 
 image=$(find_wallpaper) || {
-    echo "tinty-hook: no wallpaper for this scheme in $wallpapers" >&2
-    restart_hyprpaper
-    exit 0
+  echo "tinty-hook: no wallpaper for this scheme in $wallpapers" >&2
+  restart_hyprpaper
+  exit 0
 }
 framed=$state/wallpaper-$(date +%s%N).png
 frame-wallpaper "$image" "$framed" >/dev/null

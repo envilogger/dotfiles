@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Toggle screen recording to ~/videos/screencasts.
+# Toggle screen recording to ~/Videos/screencasts.
 #
 # Usage: screencast [area|output]
 #   area    select a region with slurp (default)
@@ -10,33 +10,39 @@
 set -euo pipefail
 
 mode=${1:-area}
-dir=$HOME/videos/screencasts
+dir=$HOME/Videos/screencasts
 file=$dir/screencast-$(date +%Y%m%d-%H%M%S).mp4
 
 # Second press: stop; the first instance notifies once wf-recorder exits.
 if pkill -INT -x wf-recorder; then
-    exit 0
+  exit 0
 fi
 
 case $mode in
-    area)
-        geometry=$(slurp -d) || exit 0
-        args=(-g "$geometry")
-        ;;
-    output)
-        args=(-o "$(hyprctl monitors -j | jq -r '.[] | select(.focused).name')")
-        ;;
-    *) echo "Usage: ${0##*/} [area|output]" >&2; exit 1 ;;
+area)
+  geometry=$(slurp -d) || exit 0
+  args=(-g "$geometry")
+  ;;
+output)
+  args=(-o "$(hyprctl monitors -j | jq -r '.[] | select(.focused).name')")
+  ;;
+*)
+  echo "Usage: ${0##*/} [area|output]" >&2
+  exit 1
+  ;;
 esac
 
 mkdir -p "$dir"
 notify-send --app-name=screencast --transient --expire-time=2000 "Recording started" "Press again to stop"
 wf-recorder "${args[@]}" -f "$file" >/dev/null 2>&1 || true
 
-[[ -s $file ]] || { notify-send --app-name=screencast --urgency=critical "Recording failed"; exit 1; }
+[[ -s $file ]] || {
+  notify-send --app-name=screencast --urgency=critical "Recording failed"
+  exit 1
+}
 
 action=$(notify-send --app-name=screencast --wait \
-    --action=default="Open folder" \
-    "Recording saved" "$file") || true
+  --action=default="Open folder" \
+  "Recording saved" "$file") || true
 [[ $action == default ]] && xdg-open "$dir" >/dev/null 2>&1 &
 exit 0

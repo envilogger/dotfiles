@@ -5,42 +5,45 @@
 #   area    select a region with slurp (default)
 #   output  the focused monitor
 #
-# Its buttons: "Edit" opens satty, "Save" moves the image to ~/pictures/screenshots.
+# Its buttons: "Edit" opens satty, "Save" moves the image to ~/Pictures/screenshots.
 # The notification stays in the notification center until used or dismissed.
 set -euo pipefail
 
 mode=${1:-area}
-dir=$HOME/pictures/screenshots
+dir=$HOME/Pictures/screenshots
 name=screenshot-$(date +%Y%m%d-%H%M%S).png
 tmp=$(mktemp --tmpdir="${XDG_RUNTIME_DIR:-/tmp}" screenshot-XXXXXX.png)
 trap 'rm -f "$tmp"' EXIT
 
 case $mode in
-    area)
-        # Esc in slurp cancels quietly
-        geometry=$(slurp -d) || exit 0
-        grim -g "$geometry" "$tmp"
-        ;;
-    output)
-        grim -o "$(hyprctl monitors -j | jq -r '.[] | select(.focused).name')" "$tmp"
-        ;;
-    *) echo "Usage: ${0##*/} [area|output]" >&2; exit 1 ;;
+area)
+  # Esc in slurp cancels quietly
+  geometry=$(slurp -d) || exit 0
+  grim -g "$geometry" "$tmp"
+  ;;
+output)
+  grim -o "$(hyprctl monitors -j | jq -r '.[] | select(.focused).name')" "$tmp"
+  ;;
+*)
+  echo "Usage: ${0##*/} [area|output]" >&2
+  exit 1
+  ;;
 esac
 
 wl-copy --type image/png <"$tmp"
 
 action=$(notify-send --app-name=screenshot --icon="$tmp" --wait \
-    --action=edit=Edit --action=save=Save \
-    "Screenshot copied") || true
+  --action=edit=Edit --action=save=Save \
+  "Screenshot copied") || true
 
 case $action in
-    edit)
-        mkdir -p "$dir"
-        satty --filename "$tmp" --output-filename "$dir/$name" --copy-command wl-copy
-        ;;
-    save)
-        mkdir -p "$dir"
-        mv "$tmp" "$dir/$name"
-        notify-send --app-name=screenshot --icon="$dir/$name" "Screenshot saved" "$dir/$name"
-        ;;
+edit)
+  mkdir -p "$dir"
+  satty --filename "$tmp" --output-filename "$dir/$name" --copy-command wl-copy
+  ;;
+save)
+  mkdir -p "$dir"
+  mv "$tmp" "$dir/$name"
+  notify-send --app-name=screenshot --icon="$dir/$name" "Screenshot saved" "$dir/$name"
+  ;;
 esac

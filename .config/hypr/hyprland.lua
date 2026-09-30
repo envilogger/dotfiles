@@ -375,7 +375,7 @@ hl.bind(
 	hl.dsp.exec_cmd("pidof hyprlock || systemd-inhibit --what=idle:sleep --who=hyprlock --why='Screen locked' hyprlock")
 )
 
--- Screenshots go to the clipboard, screencasts to ~/videos/screencasts (~/.local/bin/screenshot, screencast)
+-- Screenshots go to the clipboard, screencasts to ~/Videos/screencasts (~/.local/bin/screenshot, screencast)
 hl.bind("Print", hl.dsp.exec_cmd("screenshot area"))
 hl.bind("CTRL + Print", hl.dsp.exec_cmd("screenshot output"))
 hl.bind("ALT + Print", hl.dsp.exec_cmd("screencast area"))
@@ -428,8 +428,16 @@ hl.bind(
 	hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),
 	{ locked = true, repeating = true }
 )
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+ && qs -c bar ipc call osd brightness"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%- && qs -c bar ipc call osd brightness"), { locked = true, repeating = true })
+hl.bind(
+	"XF86MonBrightnessUp",
+	hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+ && qs -c bar ipc call osd brightness"),
+	{ locked = true, repeating = true }
+)
+hl.bind(
+	"XF86MonBrightnessDown",
+	hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%- && qs -c bar ipc call osd brightness"),
+	{ locked = true, repeating = true }
+)
 
 -- Requires playerctl
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
