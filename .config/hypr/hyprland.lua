@@ -374,6 +374,8 @@ hl.bind(
 	mainMod .. " + CTRL + L",
 	hl.dsp.exec_cmd("pidof hyprlock || systemd-inhibit --what=idle:sleep --who=hyprlock --why='Screen locked' hyprlock")
 )
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("voxtype record toggle"))
+hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("voxtype record toggle --language ru"))
 
 -- Screenshots go to the clipboard, screencasts to ~/Videos/screencasts (~/.local/bin/screenshot, screencast)
 hl.bind("Print", hl.dsp.exec_cmd("screenshot area"))
